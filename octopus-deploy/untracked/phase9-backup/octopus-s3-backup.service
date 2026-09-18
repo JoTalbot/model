@@ -1,0 +1,7 @@
+[Unit]
+Description=Octopus S3 Packstore Backup
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/opt/octopus-s3-backup.sh

@@ -1,0 +1,12 @@
+[Unit]
+Description=Octopus Garage RPC firewall allowlist
+After=network-online.target ufw.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/octopus-garage-rpc-firewall.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

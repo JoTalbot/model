@@ -1,0 +1,9 @@
+[Unit]
+Description=Octopus Local S3 Backup (Garage)
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-local-s3-backup.sh
+
+[Install]
+WantedBy=multi-user.target

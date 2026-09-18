@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Snapshot Restore Drill
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-snapshot-drill.sh
+User=root
+[Install]
+WantedBy=multi-user.target

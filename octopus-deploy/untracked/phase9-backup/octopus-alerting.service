@@ -1,0 +1,19 @@
+[Unit]
+Description=Octopus Monitoring & Telegram Alerting
+After=network.target octopus.service
+Wants=octopus.service
+
+[Service]
+EnvironmentFile=/etc/octopus/secrets.env
+Type=simple
+Restart=always
+RestartSec=30
+MemoryHigh=150M
+MemoryMax=200M
+CPUQuota=10%
+ExecStart=/usr/bin/python3 /opt/octopus-alerting.py
+EnvironmentFile=/etc/octopus/octopus.env
+Environment=ALERT_INTERVAL=60
+
+[Install]
+WantedBy=multi-user.target

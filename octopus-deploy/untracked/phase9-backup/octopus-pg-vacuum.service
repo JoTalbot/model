@@ -1,0 +1,9 @@
+[Unit]
+Description=Octopus daily PostgreSQL VACUUM
+After=postgresql.service
+
+[Service]
+Type=oneshot
+User=postgres
+ExecStart=/usr/bin/psql -d app_db -c "VACUUM ANALYZE"
+StandardOutput=journal

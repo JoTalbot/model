@@ -1,0 +1,19 @@
+[Unit]
+Description=Octopus Development Panel (Next.js)
+After=postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/octopus-devpanel
+ExecStart=/usr/bin/node node_modules/next/dist/bin/next start --port 9550
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+EnvironmentFile=/opt/octopus-devpanel/.env
+
+# Безопасность (без ProtectSystem=strict для доступа к системным путям)
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

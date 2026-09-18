@@ -1,0 +1,7 @@
+[Unit]
+Description=Omni Guardian (1min)
+[Timer]
+OnCalendar=*:*:0
+Persistent=true
+[Install]
+WantedBy=timers.target

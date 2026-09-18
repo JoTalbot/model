@@ -1,0 +1,18 @@
+# Wave 5, item 20. Disabled by default — enable explicitly.
+# NOTE: dashboard_v2 needs nicegui (not installed in prod venv); reference only.
+[Unit]
+Description=Octopus Dashboard v2 Analytics
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python /opt/octopus/swarm/dashboards/dashboard_v2.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+Environment=HOME=/root
+Environment=PYTHONPATH=/opt/octopus
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Memory Restore Drill Critical Alert Check
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/octopus/next-admin.env
+ExecStart=/usr/bin/python3 /opt/octopus-memory-restore-alert.py

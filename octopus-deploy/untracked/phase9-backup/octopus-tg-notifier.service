@@ -1,0 +1,20 @@
+[Unit]
+Description=Octopus TG Notifier (uploads + transcriptions → Telegram)
+After=octopus-ingest.service postgresql.service
+Wants=octopus-ingest.service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/octopus/secrets.env
+EnvironmentFile=/etc/octopus/octopus.env
+EnvironmentFile=/etc/octopus/ingest.env
+ExecStart=/opt/octopus-ingest-venv/bin/python /opt/octopus_tg_notifier.py
+Restart=on-failure
+RestartSec=10
+MemoryMax=60M
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=octopus-tg-notifier
+
+[Install]
+WantedBy=multi-user.target

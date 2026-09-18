@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Octopus Wiki Archivist hourly
+
+[Service]
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target

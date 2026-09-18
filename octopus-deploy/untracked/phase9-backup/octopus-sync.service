@@ -1,0 +1,19 @@
+[Unit]
+Description=Octopus → PostgreSQL data sync
+After=network.target postgresql.service octopus.service
+Wants=postgresql.service octopus.service
+
+[Service]
+EnvironmentFile=/etc/octopus/secrets.env
+Type=simple
+Restart=always
+RestartSec=10
+MemoryHigh=300M
+MemoryMax=400M
+CPUQuota=30%
+ExecStart=/usr/bin/python3 /opt/octopus-sync.py
+Environment=DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/app_db
+Environment=SYNC_INTERVAL=15
+
+[Install]
+WantedBy=multi-user.target

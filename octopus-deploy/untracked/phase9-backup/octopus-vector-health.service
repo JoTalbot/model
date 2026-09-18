@@ -1,0 +1,6 @@
+[Unit]
+Description=Octopus Vector Health (pgvector + HNSW)
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-vector-health.sh
+Nice=15

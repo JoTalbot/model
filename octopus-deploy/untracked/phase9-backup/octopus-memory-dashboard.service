@@ -1,0 +1,10 @@
+[Unit]
+Description=Octopus Memory Dashboard
+After=network.target
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/octopus-memory-dashboard.py
+Restart=on-failure
+User=root
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,5 @@
+[Unit]
+Description=Octopus streak break alert
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-streak-alert.sh

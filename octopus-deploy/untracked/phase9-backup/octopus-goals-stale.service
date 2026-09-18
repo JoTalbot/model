@@ -1,0 +1,5 @@
+[Unit]
+Description=Goals stale alert
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-goals-stale.sh

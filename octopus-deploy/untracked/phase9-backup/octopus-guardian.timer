@@ -1,0 +1,9 @@
+[Unit]
+Description=Run Octopus Guardian every hour
+
+[Timer]
+OnBootSec=1h
+OnUnitActiveSec=1h
+
+[Install]
+WantedBy=timers.target

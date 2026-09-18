@@ -1,0 +1,7 @@
+[Unit]
+Description=Weekly archive rotate Mon 03:00 UTC
+[Timer]
+OnCalendar=Mon *-*-* 03:00:00
+Persistent=true
+[Install]
+WantedBy=timers.target

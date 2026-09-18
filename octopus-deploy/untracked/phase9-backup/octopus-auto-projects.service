@@ -1,0 +1,5 @@
+[Unit]
+Description=Octopus Auto-projects creator
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-auto-projects.sh

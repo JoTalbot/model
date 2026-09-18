@@ -1,0 +1,8 @@
+[Unit]
+Description=Recalculate Health Index
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-health-index.sh
+User=root
+[Install]
+WantedBy=multi-user.target

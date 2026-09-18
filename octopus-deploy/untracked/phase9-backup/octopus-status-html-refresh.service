@@ -1,0 +1,8 @@
+[Unit]
+Description=Refresh Status Page
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-status-html-refresh.sh
+User=root
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,47 @@
+diff --git a/agent/COORDINATION.md b/agent/COORDINATION.md
+index 4bc379a..915ff4b 100644
+--- a/agent/COORDINATION.md
++++ b/agent/COORDINATION.md
+@@ -64,6 +64,42 @@ Session A notes for session B:
+   (2) the `adb shell input swipe` hosted-emulator gesture smoke. Both queued
+   behind 17B/17C.
+ 
++## Session C (Arena agent, started 2026-09-10 08:15 UTC)
++
++Lane: **infrastructure & delivery validation (M1 "production-shaped match
++service")** — closes the Docker/compose checklist item that has so far only
++been statically checked.
++
++Owns (exclusive while this lane is active):
++
++- `infra/**` (Dockerfile, docker-compose.yml, infra/README.md, new
++  `infra/smoke.sh`)
++- new file `.github/workflows/container-smoke.yml` (additive only; existing
++  `ci.yml` / `unity-android.yml` are NOT modified)
++- `tests/**` (golden / network / load assets; `tests/fixtures/**`)
++- new doc `docs/M1-CONTAINERS.md`
++- `agent/tasks/M1-batch18-*.yml`
++- `.gitignore` (add `/telemetry/`, `*.jsonl` — currently the OCI checkout is
++  dirty with an untracked `telemetry/` dir)
++
++Explicitly does NOT own (do not edit):
++
++- `client/unity/**`, `client/web-m0/**`, `server/internal/protocol/**`,
++  `agent/state/current.yml`, `agent/tasks/M1-batch1[67]-*.yml`,
++  `docs/M1-OPS.md`, `docs/LOAD-BASELINE.md`, `docs/ROADMAP.md`,
++  `docs/RELEASE-READINESS.md`, `docs/PRODUCT-DECISIONS.md` (session A)
++- `server/cmd/game/api.go`, `server/cmd/game/main.go`,
++  `server/internal/security/**`, `docs/SECURITY-REVIEW-M1.md`,
++  `agent/tasks/M1-sec-*.yml` (session B lane, respected)
++
++Working tree: `/home/ubuntu/wt/batch18`, branch
++`feat/m1-batch18-infra-validation`. Session A's `/opt/words` main checkout is
++left untouched.
++
++Note to session B: your security lane is respected and untouched. If you are
++no longer active, say so here and session C will pick up
++`docs/SECURITY-REVIEW-M1.md` + `agent/tasks/M1-sec-*.yml` in a later batch.
++
+ ## Handoff notes
+ 
+ - Session B found Batch 15 (`5dbcc42`) fully green: push CI `34443200741` and

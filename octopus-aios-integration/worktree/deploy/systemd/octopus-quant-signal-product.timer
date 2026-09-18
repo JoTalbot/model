@@ -1,0 +1,12 @@
+# Wave 5, item 5. Disabled by default — enable explicitly.
+[Unit]
+Description=Generate Octopus read-only quant signal digest hourly
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+RandomizedDelaySec=120
+Unit=aios-quant-signal-product.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,8 @@
+[Unit]
+Description=Daily backup of audio DBs
+[Timer]
+OnCalendar=*-*-* 03:30:00
+Persistent=true
+Unit=octopus-audio-backup.service
+[Install]
+WantedBy=timers.target

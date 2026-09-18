@@ -1,0 +1,9 @@
+[Unit]
+Description=Octopus pack compression benchmark (dry-run)
+After=postgresql.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-pack-benchmark.py --sample-objects 5000 --max-bytes 8388608
+Nice=15
+IOSchedulingClass=idle

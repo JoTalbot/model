@@ -1,0 +1,14 @@
+[Unit]
+Description=Octopus CLIP Image Vectorizer API
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/var/lib/octopus/clip-venv/bin/python /opt/octopus-clip-api.py
+Restart=always
+RestartSec=5
+Environment=TRANSFORMERS_CACHE=/var/lib/octopus/.cache/huggingface
+
+[Install]
+WantedBy=multi-user.target

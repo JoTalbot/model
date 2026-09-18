@@ -1,0 +1,25 @@
+[Unit]
+Description=Octopus Dynamic Tools (Phase D1 prep STUB)
+Documentation=https://huggingface.co/datasets/JoTalbot/octopus-eternal
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt
+Environment="OCTOPUS_DYNAMIC_TOOLS_PORT=9590"
+ExecStart=/usr/bin/python3 /opt/octopus-dynamic-tools.py
+Restart=on-failure
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+# SAFETY: bounded stub. Full reconcile/install in D2-D7 per DYNAMIC_TOOLS_INTEGRATION_PLAN.md.
+# After D7 chaos wave + human approval, change to:
+# Restart=always
+# CPUQuota=200%
+# MemoryMax=512M
+# and add octopus-coexistence-guard integration.
+
+[Install]
+WantedBy=multi-user.target

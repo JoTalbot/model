@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Ingest Inbox Watcher (SFTP/FolderSync uploads → ingest)
+After=octopus-ingest.service
+Wants=octopus-ingest.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-ingest-inbox-watcher.sh

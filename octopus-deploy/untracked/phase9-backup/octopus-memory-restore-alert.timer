@@ -1,0 +1,8 @@
+[Unit]
+Description=Run Octopus Memory Restore Drill Critical Alert Check every 10 minutes
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=10min
+Unit=octopus-memory-restore-alert.service
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Metrics Aggregator
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-metrics-aggregator.sh
+User=root
+[Install]
+WantedBy=multi-user.target

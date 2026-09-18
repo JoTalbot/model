@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Memory Restore Drill — AWS EC2 (SSH sha256 verify)
+After=network-online.target octopus-aws-tunnel.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-memory-restore-drill-ec2.py
+Nice=10

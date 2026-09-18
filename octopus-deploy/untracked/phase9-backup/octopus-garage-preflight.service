@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Garage cluster preflight (dry-run)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-garage-preflight.py

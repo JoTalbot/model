@@ -1,0 +1,16 @@
+[Unit]
+Description=Octopus Long-term DCA Portfolio paper tracker (daily mark-to-market)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+Environment=OCTOPUS_ROOT=/opt/octopus
+Environment=OCTOPUS_DATA_DIR=/var/lib/octopus
+ExecStart=/opt/aios-venv/bin/python -u /opt/octopus/scripts/aios/run_dca_paper.py
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+# Wave 5, item 5. Disabled by default — enable explicitly.
+[Unit]
+Description=Weekly Octopus Quant ML model retrain
+
+[Timer]
+OnCalendar=Mon *-*-* 04:00:00
+Persistent=true
+RandomizedDelaySec=600
+Unit=aios-quant-ml-retrain.service
+
+[Install]
+WantedBy=timers.target

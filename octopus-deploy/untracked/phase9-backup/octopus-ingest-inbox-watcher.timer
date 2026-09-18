@@ -1,0 +1,10 @@
+[Unit]
+Description=Run inbox watcher every minute
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=1min
+Unit=octopus-ingest-inbox-watcher.service
+
+[Install]
+WantedBy=timers.target

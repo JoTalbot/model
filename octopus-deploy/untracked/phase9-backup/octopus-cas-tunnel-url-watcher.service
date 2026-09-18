@@ -1,0 +1,14 @@
+[Unit]
+Description=Watch cloudflared log and persist current quick-tunnel URL
+After=octopus-cas-tunnel.service
+Wants=octopus-cas-tunnel.service
+
+[Service]
+Type=simple
+ExecStart=/opt/octopus-cas-tunnel-url-watcher.sh
+Restart=always
+RestartSec=10
+MemoryMax=20M
+
+[Install]
+WantedBy=multi-user.target

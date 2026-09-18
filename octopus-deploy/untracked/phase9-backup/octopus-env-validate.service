@@ -1,0 +1,7 @@
+[Unit]
+Description=Octopus env validator (dry-run)
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-env-validate.py

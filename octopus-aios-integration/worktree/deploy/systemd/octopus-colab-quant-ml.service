@@ -1,0 +1,18 @@
+# Wave 5, item 5. Disabled by default — enable explicitly.
+[Unit]
+Description=Octopus Colab Quant ML Training & Keeper (GPU)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/octopus
+Environment=DISPLAY=:1
+Environment=PYTHONPATH=/opt/octopus
+Environment=COLAB_SERVICE_KIND=quant_ml
+Environment=COLAB_SERVICE_NAME=colab-quant-ml
+ExecStart=/opt/aios-venv/bin/python -u /opt/octopus/scripts/aios/ml/colab_automation_runner.py
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

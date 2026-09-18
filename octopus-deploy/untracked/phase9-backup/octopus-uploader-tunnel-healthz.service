@@ -1,0 +1,5 @@
+[Unit]
+Description=Octopus Uploader Tunnel Healthcheck
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-uploader-tunnel-healthz.sh

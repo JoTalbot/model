@@ -1,0 +1,13 @@
+[Unit]
+Description=Octopus Vector Search Service (pgvector)
+After=postgresql.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/octopus-vector-search.py
+Restart=always
+RestartSec=5
+Environment=DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/app_db
+
+[Install]
+WantedBy=multi-user.target

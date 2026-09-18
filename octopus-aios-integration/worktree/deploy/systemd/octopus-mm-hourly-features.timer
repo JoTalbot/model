@@ -1,0 +1,10 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Weekly hourly-microstructure aggregation (Sun 16:00 UTC)
+
+[Timer]
+OnCalendar=Sun 16:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

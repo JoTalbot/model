@@ -1,0 +1,7 @@
+[Unit]
+Description=Octopus OCR Worker
+After=postgresql.service
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/octopus/next-admin.env
+ExecStart=/usr/bin/python3 /opt/octopus-ocr-worker.py

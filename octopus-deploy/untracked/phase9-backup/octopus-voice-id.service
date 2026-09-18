@@ -1,0 +1,12 @@
+[Unit]
+Description=Octopus Voice ID profile/suggestion refresh (ECAPA, no auto-apply)
+After=postgresql.service octopus-ingest.service
+Wants=postgresql.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-ingest-venv/bin/python /opt/octopus_voice_id.py run --threshold 0.82
+Nice=15
+CPUQuota=150%
+MemoryMax=2G
+TimeoutStartSec=1800

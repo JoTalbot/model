@@ -1,0 +1,7 @@
+[Unit]
+Description=Every-2min Unified Health Report
+[Timer]
+OnCalendar=*:0/2
+Persistent=true
+[Install]
+WantedBy=timers.target

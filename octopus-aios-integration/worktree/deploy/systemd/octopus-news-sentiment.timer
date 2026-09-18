@@ -1,0 +1,10 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Hourly crypto news sentiment collection
+
+[Timer]
+OnCalendar=*:20
+Persistent=true
+
+[Install]
+WantedBy=timers.target

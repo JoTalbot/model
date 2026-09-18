@@ -1,0 +1,16 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Octopus Quant ML Engine - Market Data Collector (5 бирж)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python -u /opt/octopus/scripts/aios/collectors/run_market_data_collector.py daemon --interval 900 --timeframe 1h --limit 500 --orderbooks
+Restart=always
+RestartSec=30
+MemoryMax=2048M
+
+[Install]
+WantedBy=multi-user.target

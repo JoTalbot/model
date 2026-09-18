@@ -1,0 +1,8 @@
+[Unit]
+Description=Goals stale check daily 11:00 Kyiv
+[Timer]
+OnCalendar=*-*-* 08:00:00
+Persistent=true
+Unit=octopus-goals-stale.service
+[Install]
+WantedBy=timers.target

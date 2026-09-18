@@ -1,0 +1,12 @@
+[Unit]
+Description=Octopus Wiki Archivist
+After=network.target octopus.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-wiki-archivist.py
+ExecStartPost=/usr/bin/python3 /opt/octopus-obsidian-vector-sync.py
+EnvironmentFile=/etc/octopus/secrets.env
+
+[Install]
+WantedBy=multi-user.target

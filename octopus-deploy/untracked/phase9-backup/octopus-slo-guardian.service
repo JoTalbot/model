@@ -1,0 +1,11 @@
+[Unit]
+Description=Octopus SLO Guardian (always-green)
+After=network.target
+[Service]
+Type=simple
+ExecStart=/opt/octopus-slo-guardian.sh
+Restart=always
+RestartSec=10
+User=root
+[Install]
+WantedBy=multi-user.target

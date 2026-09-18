@@ -1,0 +1,7 @@
+[Unit]
+Description=Hourly Log Analysis
+[Timer]
+OnCalendar=*-*-* *:45:00
+Persistent=true
+[Install]
+WantedBy=timers.target

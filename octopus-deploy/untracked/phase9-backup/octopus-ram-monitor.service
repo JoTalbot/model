@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus ram Monitor
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-ram-monitor.sh
+User=root
+[Install]
+WantedBy=multi-user.target

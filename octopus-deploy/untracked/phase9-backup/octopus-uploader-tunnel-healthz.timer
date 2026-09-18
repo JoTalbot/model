@@ -1,0 +1,8 @@
+[Unit]
+Description=Run uploader tunnel healthcheck every 2 min
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=2min
+Unit=octopus-uploader-tunnel-healthz.service
+[Install]
+WantedBy=timers.target

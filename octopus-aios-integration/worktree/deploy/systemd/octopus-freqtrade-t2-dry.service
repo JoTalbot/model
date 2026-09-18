@@ -1,0 +1,16 @@
+# Wave 5, item 2. Disabled by default — enable explicitly.
+# NOTE: needs /root/freqtrade-venv (not created in Wave 5) + exchange access; dry-run only.
+[Unit]
+Description=Octopus Freqtrade T2 dry-run bot (independent live validation of T2 signals)
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/octopus
+ExecStart=/root/freqtrade-venv/bin/freqtrade trade --config /opt/octopus/scripts/aios/freqtrade/freqtrade_config_t2.json --strategy T2Momentum --strategy-path /opt/octopus/scripts/aios/freqtrade --userdir /opt/octopus/data/freqtrade --logfile /var/log/octopus-freqtrade-t2-dry.log
+Restart=on-failure
+RestartSec=30
+MemoryMax=1536M
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+# Wave 5, item 5. Disabled by default — enable explicitly.
+[Unit]
+Description=Octopus Quant ML drift & freshness monitor
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python /opt/octopus/scripts/aios/ml/quant_ml_monitor.py
+
+[Install]
+WantedBy=multi-user.target

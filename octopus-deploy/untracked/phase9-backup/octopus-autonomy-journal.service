@@ -1,0 +1,7 @@
+[Unit]
+Description=Octopus Autonomy Journal Generator
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/opt/octopus-autonomy-journal.py

@@ -1,0 +1,8 @@
+[Unit]
+Description=Weekly export
+[Timer]
+OnCalendar=Mon *-*-* 04:00:00
+Persistent=true
+Unit=octopus-export-weekly.service
+[Install]
+WantedBy=timers.target

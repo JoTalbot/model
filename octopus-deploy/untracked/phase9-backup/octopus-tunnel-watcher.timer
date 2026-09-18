@@ -1,0 +1,8 @@
+[Unit]
+Description=Run tunnel watcher every minute
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=1min
+Unit=octopus-tunnel-watcher.service
+[Install]
+WantedBy=timers.target

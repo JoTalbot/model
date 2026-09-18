@@ -1,0 +1,9 @@
+[Unit]
+Description=Unified Octopus Backup Manager
+
+[Service]
+Type=oneshot
+MemoryHigh=300M
+MemoryMax=400M
+CPUQuota=20%
+ExecStart=/opt/octopus-backup-manager.sh

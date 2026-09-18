@@ -1,0 +1,15 @@
+[Unit]
+Description=Octopus Node Status Prometheus exporter
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+MemoryHigh=200M
+MemoryMax=250M
+CPUQuota=20%
+ExecStart=/usr/bin/python3 /opt/octopus-node-exporter.py
+
+[Install]
+WantedBy=multi-user.target

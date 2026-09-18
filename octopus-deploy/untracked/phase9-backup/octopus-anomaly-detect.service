@@ -1,0 +1,8 @@
+[Unit]
+Description=Anomaly Detection
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-anomaly-detect.sh
+User=root
+[Install]
+WantedBy=multi-user.target

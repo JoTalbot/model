@@ -1,0 +1,20 @@
+[Unit]
+Description=Octopus child node on port %i
+Requires=docker.service octopus.service
+After=docker.service octopus.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=15
+TimeoutStartSec=60
+TimeoutStopSec=30
+EnvironmentFile=-/etc/octopus/octopus.env
+EnvironmentFile=/etc/octopus/secrets.env
+ExecStartPre=-/usr/bin/docker rm -f octopus-child-%i
+ExecStart=/bin/bash -lc 'exec /opt/octopus-start-wrapper-patched.sh "octopus-child-%i" "%i" "-e OCTOPUS_PARENT_PUBKEY=f422e57808bb5dd491ca7681171b12da1f41eb2e979a18e3155735d0359a5da3 -e OCTOPUS_PARENT_NODE_ID=faab4d9ef70b34cf -e SWARM_SPAWNED=1 -e TELEGRAM_BOT_TOKEN="'
+ExecStop=/usr/bin/docker stop -t 20 octopus-child-%i
+
+[Install]
+WantedBy=multi-user.target

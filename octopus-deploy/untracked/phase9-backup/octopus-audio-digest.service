@@ -1,0 +1,5 @@
+[Unit]
+Description=Octopus Audio Daily Digest → Telegram
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-audio-daily-digest.sh

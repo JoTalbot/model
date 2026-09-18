@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Octopus SLO checker every 5 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+RandomizedDelaySec=30
+Persistent=true
+Unit=octopus-slo-checker.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,7 @@
+[Unit]
+Description=Run Loki alert relay every 1min
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=1min
+[Install]
+WantedBy=timers.target

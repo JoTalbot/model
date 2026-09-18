@@ -1,0 +1,19 @@
+[Unit]
+Description=Octopus Task Reaper (daemon with healthz)
+After=network.target postgresql@14-main.service
+
+[Service]
+Type=simple
+MemoryHigh=200M
+MemoryMax=250M
+CPUQuota=15%
+ExecStart=/usr/bin/python3 /opt/octopus-task-reaper.py
+EnvironmentFile=/etc/octopus/secrets.env
+WorkingDirectory=/opt
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

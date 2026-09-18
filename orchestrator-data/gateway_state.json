@@ -1,0 +1,24 @@
+{
+ "cooldown_until": 0.0,
+ "interval": 900.0,
+ "recaptcha_streak": 0,
+ "security_blocked": false,
+ "block_pause_until": 0.0,
+ "budget": {
+  "day": "2026-09-18",
+  "used": 24
+ },
+ "saved_at": "2026-09-18 10:27:54",
+ "counters": {
+  "tab_opened": 8,
+  "upstream_error": 4,
+  "humanized": 408,
+  "page_reset": 4,
+  "cdp_down": 1,
+  "tab_navigated": 1,
+  "ok": 22,
+  "cleanup_fail": 22,
+  "prompt_failed": 13,
+  "errors": 5
+ }
+}

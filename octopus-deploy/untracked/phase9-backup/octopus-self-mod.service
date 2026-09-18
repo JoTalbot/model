@@ -1,0 +1,12 @@
+[Unit]
+Description=Octopus Proactive Self-Modification
+After=network.target octopus-forecaster.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-proactive-self-mod.py --dry-run
+Nice=19
+IOSchedulingClass=idle
+
+[Install]
+WantedBy=multi-user.target

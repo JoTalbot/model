@@ -1,0 +1,52 @@
+# Ruff — быстрый линтер и форматтер для Python.
+# https://docs.astral.sh/ruff/
+
+target-version = "py312"
+line-length = 120
+
+[lint]
+# Включённые группы правил
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes
+    "I",     # isort
+    "UP",    # pyupgrade
+    "B",     # flake8-bugbear
+    "SIM",   # flake8-simplify
+    "RUF",   # ruff-specific
+]
+
+# Игнорируемые правила
+ignore = [
+    "E501",    # line too long — контролируем через line-length
+    "B008",    # function call in default argument (Click uses this)
+    "UP007",   # X | Y union syntax — уже используем
+    "SIM108",  # ternary — иногда if/else читабельнее
+    "RUF001",  # ambiguous unicode in string — кириллица в русском проекте это норма
+    "RUF002",  # ambiguous unicode in docstring
+    "RUF003",  # ambiguous unicode in comment
+    "RUF012",  # mutable class default — ложные срабатывания на ConfigModel
+    "RUF006",  # asyncio dangling task — осознанный паттерн в gossip/rpc
+    "B017",    # assert raises Exception — в тестах допустимо
+    "B015",    # useless comparison — ложные срабатывания в тестах
+]
+
+# Per-file ignores
+[lint.per-file-ignores]
+"tests/*" = ["B018"]  # useless expression (assert patterns)
+"swarm/network/handshake.py" = ["E701", "E702", "E722", "SIM102", "SIM105"]  # legacy compact style
+"swarm/network/auth.py" = ["SIM105"]
+"swarm/doctor.py" = ["SIM105"]
+"tests/test_auth.py" = ["RUF059", "F841", "F811"]
+"tests/test_handshake.py" = ["E402"]
+"tests/test_recovery_http.py" = ["E402"]  # pytest.importorskip pattern (Wave 2 port)
+"swarm/config/compat.py" = ["E303", "B903", "RUF012"]  # compatibility shim
+
+[lint.isort]
+known-first-party = ["swarm"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true

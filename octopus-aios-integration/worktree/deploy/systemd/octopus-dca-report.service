@@ -1,0 +1,17 @@
+[Unit]
+Description=Octopus DCA portfolio weekly Telegram report
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+Environment=OCTOPUS_ROOT=/opt/octopus
+Environment=OCTOPUS_DATA_DIR=/var/lib/octopus
+ExecStart=/opt/aios-venv/bin/python -u /opt/octopus/scripts/aios/dca_telegram_report.py --weekly
+ExecStart=/opt/aios-venv/bin/python -u /opt/octopus/scripts/aios/dca_chart_report.py --send
+
+[Install]
+WantedBy=multi-user.target

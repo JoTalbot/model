@@ -1,0 +1,8 @@
+[Unit]
+Description=Hourly auto-projects check
+[Timer]
+OnBootSec=15min
+OnUnitActiveSec=1h
+Unit=octopus-auto-projects.service
+[Install]
+WantedBy=timers.target

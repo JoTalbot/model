@@ -1,0 +1,73 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .[dev]
+      - name: Run doctor
+        run: octopus doctor
+      - name: Lint changed files
+        run: |
+          ruff check \
+            node.py \
+            swarm/doctor.py \
+            swarm/entrypoint.py \
+            swarm/network/auth.py \
+            swarm/network/handshake.py \
+            tests/test_auth.py \
+            tests/test_handshake.py \
+            swarm/tgbot/ \
+            swarm/quant/ \
+            scripts/aios/ \
+            scripts/aios-bridge/ \
+            scripts/aios/freqtrade/ \
+            scripts/aios/collectors/ \
+            swarm/dashboards/__init__.py \
+            swarm/dashboards/operator_dashboard_api.py \
+            swarm/dashboards/ai_safety_dashboard.py \
+            swarm/dashboards/dashboard_websocket_test.py \
+            swarm/dashboards/seed_dashboard_data.py \
+            tests/test_dashboards_port.py \
+            tests/test_tgbot_bridge.py
+      - name: Test packaging, CLI smoke, auth, and handshake
+        run: |
+          python -m pytest -q \
+            tests/test_config_app.py \
+            tests/test_node_cli.py \
+            tests/test_node_cli_immortal.py::test_cli_memory_metrics_empty \
+            tests/test_auth.py \
+            tests/test_handshake.py \
+                        tests/test_tgbot_bridge.py \
+            tests/test_market_regime.py \
+            tests/test_quant_directional_policy.py \
+            tests/test_quant_directional_v2.py \
+            tests/test_quant_port.py \
+            tests/test_quant_report_formatters.py \
+            tests/test_quant_trade_introspection.py \
+            tests/test_quant_trading_accounting.py \
+            tests/test_quant_trading_fees_risk.py \
+            tests/test_run_quant_trading_v2.py \
+            tests/test_tg_quant_cmds.py \
+            tests/test_dashboards_port.py \
+            tests/test_t2_metrics.py \
+            tests/test_t2_paper.py \
+            tests/test_t2_port.py \
+            tests/test_collectors_port.py \
+            tests/test_mm_queue_model.py \
+            tests/test_quant_backfill_pagination.py \n            tests/test_quant_arbitrage_oos.py \n            tests/test_quant_cross_sectional.py \n            tests/test_quant_low_frequency_trend.py \n            tests/test_quant_pairs_oos.py \n            tests/test_quant_regime_v3.py \n            tests/test_quant_signal_product.py \n            tests/test_quant_strategy_scoreboard.py \n            tests/test_quant_v2_gate.py \n            tests/test_quant_walkforward_v2.py \n            tests/test_quant_ab_report.py \n            tests/test_quant_ab_verdict.py \n            tests/test_compare_quant_research.py

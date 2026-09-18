@@ -1,0 +1,10 @@
+[Unit]
+Description=Octopus Cost Governor (Protect Wallet)
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /opt/octopus-cost-governor.sh
+
+[Install]
+WantedBy=multi-user.target

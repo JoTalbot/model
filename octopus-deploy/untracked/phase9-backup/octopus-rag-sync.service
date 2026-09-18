@@ -1,0 +1,9 @@
+[Unit]
+Description=Octopus RAG-sync (V1+V2 transcripts → CAS)
+After=octopus-audio-transcribe.service octopus-audio-v2.service
+Wants=octopus-audio-transcribe.service octopus-audio-v2.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash -c 'curl -sS -X POST http://127.0.0.1:9560/api/rag-sync && echo && curl -sS -X POST http://127.0.0.1:9561/api/rag-sync'
+StandardOutput=journal

@@ -1,0 +1,6 @@
+[Unit]
+Description=Octopus archive rotate + cleanup
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-archive-rotate.sh
+StandardOutput=journal

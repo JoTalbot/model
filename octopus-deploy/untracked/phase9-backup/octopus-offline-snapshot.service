@@ -1,0 +1,11 @@
+[Unit]
+Description=Octopus Offline Snapshot
+After=network.target
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-offline-snapshot.sh
+User=root
+Nice=19
+IOSchedulingClass=idle
+[Install]
+WantedBy=multi-user.target

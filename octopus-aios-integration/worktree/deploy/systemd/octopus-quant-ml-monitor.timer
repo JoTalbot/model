@@ -1,0 +1,12 @@
+# Wave 5, item 5. Disabled by default — enable explicitly.
+[Unit]
+Description=Hourly Octopus Quant ML monitor
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+RandomizedDelaySec=300
+Unit=aios-quant-ml-monitor.service
+
+[Install]
+WantedBy=timers.target

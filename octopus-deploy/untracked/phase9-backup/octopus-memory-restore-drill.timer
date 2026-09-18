@@ -1,0 +1,8 @@
+[Unit]
+Description=Run Octopus Memory Restore Drill daily
+[Timer]
+OnCalendar=*-*-* 03:20:00
+Persistent=true
+Unit=octopus-memory-restore-drill.service
+[Install]
+WantedBy=timers.target

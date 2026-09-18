@@ -1,0 +1,8 @@
+[Unit]
+Description=Critical Service Guard
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-critical-guard.sh
+User=root
+[Install]
+WantedBy=multi-user.target

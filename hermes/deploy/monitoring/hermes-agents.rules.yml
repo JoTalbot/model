@@ -1,0 +1,374 @@
+# Alert rules for the Hermes agent OS (bus, agents, federation, projects).
+#
+# Added 2026-09-16 together with the distributed Agent Bus. Before this, Prometheus knew
+# nothing about the bus, the agents or the peer nodes, so no alert could fire for any of
+# them. Every expression below is backed by a metric the Hermes exporter was verified to
+# emit (scripts/hermes_metrics_exporter.py, job hermes_os_exporter).
+groups:
+  - name: hermes_agent_bus
+    rules:
+      - alert: HermesBusDown
+        expr: hermes_bus_up == 0 or up{job="hermes_os_exporter"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Agent Bus is not reachable"
+          description: "nats-server does not answer /varz on 127.0.0.1:8222 (or the Hermes
+            exporter itself is down). Cross-node messages are not flowing: agents on this
+            node can still work locally, but nothing leaves the host."
+
+      - alert: HermesAgentsRuntimeDown
+        expr: hermes_agents_runtime_up == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Hermes agents runtime is down"
+          description: "No process is attached to hermes.dm.* / hermesrpc.*. Tasks sent to
+            any agent on this node will time out."
+
+      - alert: HermesBusBacklog
+        expr: hermes_bus_consumer_ack_pending > 50
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "This node is not consuming its bus stream"
+          description: "ack_pending > 50 for 10 minutes: the durable consumer is not
+            acknowledging messages, so the node is silently falling behind (a stuck local
+            mirror or a hung handler)."
+
+      - alert: HermesAgentDispatchStuck
+        expr: hermes_agents_dispatched_pending > 5
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Dispatched tasks are not completing"
+          description: "The orchestrator is waiting for more than 5 results for 30 minutes —
+            a delegated agent is not answering."
+
+      - alert: HermesProjectTreeMissing
+        expr: hermes_project_path_present == 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "A project agent points at a path that does not exist"
+          description: "Project {{ $labels.project }} has no checkout on this node. Either
+            the project moved (fix the profile) or the agent should not be wired here."
+
+      - alert: HermesProjectDirtyBurst
+        expr: hermes_project_dirty > 30
+        for: 2h
+        labels:
+          severity: info
+        annotations:
+          summary: "Project {{ $labels.project }} has many uncommitted paths"
+          description: "More than 30 modified/untracked paths for 2 hours. Not necessarily
+            wrong — but uncommitted work is not covered by the recovery story."
+
+      - alert: HermesConfigUnpushed
+        expr: hermes_repo_unpushed > 0
+        for: 6h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Hermes configuration has committed but unpushed changes"
+          description: "GitHub is the source of truth; local-only commits are invisible to
+            every other node and to recovery."
+
+      - alert: HermesNodeSilent
+        expr: increase(hermes_node_messages_total[24h]) == 0 and hermes_nodes_known > 1
+        for: 1h
+        labels:
+          severity: info
+        annotations:
+          summary: "Node {{ $labels.node }} has been silent for 24h"
+          description: "A known peer has not sent anything for a day. The node may be down,
+            off the tailnet, or simply idle."
+
+      - alert: HermesHostMemoryPressure
+        expr: hermes_host_mem_used_pct > 90
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Host RAM above 90% for 10m ({{ $value }}%)"
+          description: "Another workload on this box is close to starving the agent bus. Check
+            `docker stats` and consider limiting the offending container."
+
+      - alert: HermesHostSwapFull
+        expr: hermes_host_swap_used_pct > 90
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Swap above 90% ({{ $value }}%) — the box is out of real memory"
+          description: "Sustained swap use means every Hermes process is paying for someone
+            else's memory. Performance of the bus and the chat degrades first."
+
+      - alert: HermesHostLoadHigh
+        expr: hermes_host_load_per_core > 3
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Load per core above 3 ({{ $value }})"
+          description: "Scheduled handlers and model calls will time out. Identify the process
+            before it affects the bus."
+
+      - alert: HermesUnprotectedFromOOM
+        expr: hermes_proc_oom_score{unit="nats-server"} > 200 or hermes_proc_oom_score{unit="hermes-agents"} > 200
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.unit }} has a high OOM score ({{ $value }})"
+          description: "The kernel would kill the agent bus as readily as anything else.
+            Run scripts/install-protection.sh and restart the unit."
+
+      - alert: HermesProjectPathUnreadable
+        expr: hermes_project_path_present == 2
+        for: 1h
+        labels:
+          severity: info
+        annotations:
+          summary: "Project {{ $labels.project }} exists but the metrics user cannot see it"
+          description: "The path is there, the exporter is not allowed to look at it. Either
+            grant traverse rights (setfacl -m u:hermes:x /home/ubuntu) or ignore this alert
+            knowingly — but never mistake it for a missing project."
+      - alert: HermesPendingOverdue
+        expr: hermes_agents_pending_overdue > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $value }} task(s) have had no answer for over 6 hours"
+          description: "An agent is silent on a task the owner asked for. Check
+            journalctl -u hermes-agents and the agent's own log in
+            /var/lib/hermes-agents/logs before assuming the task is still running."
+
+      - alert: HermesAgentFailing
+        expr: hermes_agent_failures_1h >= 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Agent {{ $labels.agent }} failed {{ $value }} times in the last hour"
+          description: "Until now a failing handler was invisible: the per-run logs existed
+            but nothing counted them, so an agent could break and stay broken. The run
+            history lists each failure with its exit code and log file — `bash
+            agents/checks/history.sh` (or «что делали агенты» in Telegram) shows them."
+
+      # FACT (2026-09-17): агент просил "умный" тир, а отвечала дешёвая модель. Теперь это
+      # измеряется (hermes_model_tier_mismatch_1h) и должно доходить до владельца: потери
+      # умности не видны в обычных метриках — ответы приходят, просто не те.
+      # FACT (2026-09-17): у тира code не осталось рабочего провайдера, и это было не видно:
+      # ответы приходили от модели другого тира. Тихий отказ тира — это тихая потеря качества.
+      # FACT (2026-09-17): бэкап без проверенного восстановления — это надежда, а не бэкап.
+      # Учение идёт раз в месяц; если оно не прошло или не запускалось 35 дней — это тревога.
+      # FACT (2026-09-17): один и тот же отказ повторялся неделю (secret-scan, backup status),
+      # и никто об этом не знал: каждая неудача выглядела разовой.
+      # DECISION (2026-09-17, пункт 5 владельца): качество измеряется оценками, и падение
+      # качества должно приходить само. Порог: ≥5 оценок за сутки и больше 30% из них — 👎.
+      - alert: HermesAnswerQualityDrop
+        expr: hermes_feedback_24h >= 5 and hermes_feedback_down_share_24h > 30
+        for: 30m
+        labels:
+          severity: warning
+          area: quality
+        annotations:
+          summary: "Оценки ответов ухудшились: {{ $value }}% из них 👎 за сутки"
+          description: >-
+            Владелец всё чаще оценивает ответы как неточные. Смотреть: bash agents/checks/feedback.sh
+            (какие вопросы не попали), bash agents/checks/models.sh (не отвечает ли модель другого
+            тира) и eval: bash scripts/eval-agents.sh. Частая причина — деградация тира модели.
+
+      - alert: HermesRepeatedFailure
+        expr: max by (agent) (hermes_agent_repeat_failures) >= 3
+        for: 1h
+        labels:
+          severity: warning
+          area: agents
+        annotations:
+          summary: "Один и тот же сбой у {{ $labels.agent }} повторяется {{ $value }} раз за неделю"
+          description: >-
+            Handler падает по одной и той же причине снова и снова. Разобрать историю:
+            «что повторяется» у агента или bash agents/checks/repeats.sh (там же причина),
+            полная история — bash agents/checks/history.sh.
+
+      # FACT (2026-09-17): ночной бэкап падал (tar: file changed as we read it) и оставлял
+      # набор без архива конфига узла — ни один алерт не сработал. Теперь сам бэкап говорит,
+      # отработал он или нет, и это critical: без nodecfg восстановленный узел игнорирует владельца.
+      - alert: HermesBackupRunFailed
+        expr: hermes_backup_last_ok == 0
+        for: 15m
+        labels:
+          severity: critical
+          area: recovery
+        annotations:
+          summary: "Бэкап не отработал полностью"
+          description: >-
+            Последний прогон бэкапа не создал полный набор архивов или нашёл повреждённый архив.
+            Проверить: cat /var/lib/hermes-bus/backup-last.json, journalctl -u hermes-backup.service
+            и bash agents/checks/backup-verify.sh. Частая причина — tar code 1 на живой системе.
+
+      - alert: HermesRestoreDrillFailed
+        expr: hermes_restore_drill_ok == 0
+        for: 15m
+        labels:
+          severity: warning
+          area: recovery
+        annotations:
+          summary: "Последнее учение по восстановлению НЕ прошло"
+          description: >-
+            Бэкап не разворачивается или в нём нет ключевых файлов. Пока это так, восстановление
+            узла из архива не подтверждено. Разобрать: bash scripts/drill-restore.sh --keep и
+            посмотреть список проблем в /var/lib/hermes-bus/restore-drill.json.
+
+      - alert: HermesRestoreDrillStale
+        expr: hermes_restore_drill_age_hours > 840
+        for: 30m
+        labels:
+          severity: warning
+          area: recovery
+        annotations:
+          summary: "Учение по восстановлению не проводилось более 35 дней"
+          description: >-
+            Таймер hermes-restore-drill.timer должен запускать учение 1-го числа каждого месяца.
+            Проверить: systemctl list-timers hermes-restore-drill.timer и
+            bash scripts/install-restore-drill.sh --check.
+
+      - alert: HermesLLMTierNoProvider
+        expr: sum by (tier) (hermes_llm_provider_healthy{tier=~"fast|reasoning|code|long_context|local"}) == 0
+        for: 15m
+        labels:
+          severity: warning
+          area: llm
+        annotations:
+          summary: "У тира {{ $labels.tier }} не осталось здоровых провайдеров"
+          description: >-
+            Балансировщик не может ответить моделью этого тира, поэтому запросы уходят к
+            модели другого тира (или к локальному движку). Проверить, кто именно нездоров:
+            curl -s localhost:9600/api/v1/aios/status и bash agents/checks/models.sh.
+            Известные случаи: mistral-small — HTTP 429 (квота ключа); hf-Qwen2.5-72B — нет ключа.
+
+      - alert: HermesLLMHealthUnreachable
+        expr: hermes_llm_balancer_up == 0
+        for: 10m
+        labels:
+          severity: critical
+          area: llm
+        annotations:
+          summary: "Метрики не могут спросить здоровье LLM-провайдеров"
+          description: >-
+            Экспортёр не получил /health балансировщика чаще, чем раз в 10 минут: значит о
+            состоянии провайдеров мы не знаем ничего, а агенты при этом продолжают отвечать.
+            Проверить: systemctl is-active octopus-aios.service, curl -s localhost:9600/health.
+
+      - alert: HermesModelTierMismatch
+        expr: sum(hermes_model_tier_mismatch_1h) > 2
+        for: 10m
+        labels:
+          severity: warning
+          area: llm
+        annotations:
+          summary: "Модель отвечает не тем тиром, который просили ({{ $value }} за час)"
+          description: >-
+            Агент запросил тир (reasoning/code/long_context/local), а ответила модель другого
+            тира. Проверить: curl -s localhost:9700/metrics | grep tier_mismatch и
+            curl -s localhost:9600/api/v1/aios/status (здоровье провайдеров). Известные причины:
+            тир code — mistral-small отдаёт HTTP 429, у hf-Qwen2.5-72B нет ключа и его хост не
+            разрешается; тир local — служба ollama на узле выключена.
+          runbook: docs/RUNBOOK.md
+
+      - alert: HermesModelFallbackStorm
+        expr: sum(hermes_model_fallbacks_1h) >= 3
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $value }} model requests had to fall back in the last hour"
+          description: "A tier stopped answering and the agents degraded (local model, then
+            facts only). The owner may still be getting answers — which is exactly why this
+            must be visible: quality drops silently, cost and latency rise. Check the
+            balancer and tier health, then `bash agents/checks/history.sh` for the tiers."
+
+      - alert: HermesQueueBacklog
+        expr: hermes_queue_wait_p95_ms > 120000
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "Tasks wait over two minutes before a handler starts"
+          description: "Background runs are not supposed to hold the owner's questions. If
+            the p95 wait stays above two minutes, either a project run is stuck or the
+            concurrency is too low for this node."
+
+      - alert: HermesContainerLimitDrift
+        expr: hermes_container_limit_drift > 0
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $value }} container(s) lost their owner-approved memory limit"
+          description: "A limit set with `docker update` lives on the container, not on the
+            image: recreating the container silently removes it (FACT 2026-09-17, the browser
+            came back with Memory=0). container-guard.sh restores it every 15 minutes — this
+            alert means the restore itself is failing, or someone removes it repeatedly."
+
+      - alert: HermesContainerGuardStale
+        expr: hermes_container_guard_age_seconds > 3600
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "The container limit guard has not run for over an hour"
+          description: "Nothing is enforcing the approved limits right now. Check
+            `systemctl status hermes-container-guard.timer`."
+
+      - alert: HermesWiringDrift
+        expr: hermes_wiring_drift > 0
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Agent wiring differs from the generator"
+          description: "config/agents no longer matches what wire-agents.sh would produce, so
+            agents may be running with handlers or env that no longer describe reality.
+            wiring-guard.sh repairs it every 30 minutes; this alert means the repair is failing."
+
+      - alert: HermesProjectStaleCopy
+        expr: hermes_project_behind > 50
+        for: 6h
+        labels:
+          severity: info
+        annotations:
+          summary: "Local copy of {{ $labels.project }} is {{ $value }} commits behind GitHub"
+          description: "The work itself is safe on GitHub, but whatever runs from this checkout
+            is running old code. `pull-project <slug>` in the chat updates it (asks for
+            confirmation, refuses on a dirty tree)."
+
+      - alert: HermesBackupStale
+        expr: hermes_backup_age_hours > 48
+        for: 1h
+        labels:
+          severity: critical
+        annotations:
+          summary: "The newest state backup is {{ printf \"%.0f\" $value }} hours old"
+          description: "hermes-backup.timer runs daily and verify-backup.sh checks the archive
+            right after. Two days without a backup means the schedule is broken — check
+            `systemctl status hermes-backup.timer` and journalctl -u hermes-backup."
+
+      - alert: HermesJournalGrowing
+        expr: hermes_journal_bytes > 1.5e9
+        for: 6h
+        labels:
+          severity: info
+        annotations:
+          summary: "systemd journal is {{ printf \"%.1f\" $value }} bytes despite SystemMaxUse=500M"
+          description: "Something is writing faster than journald rotates. Find the noisiest
+            unit with `bash agents/checks/journal-top.sh` and decide: rotate, compress, or fix
+            the writer. The loudest writer measured on 2026-09-17 was a project's own sync unit."

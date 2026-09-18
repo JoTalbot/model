@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Octopus smoke test every hour
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=1h
+Unit=octopus-smoke.service
+
+[Install]
+WantedBy=timers.target

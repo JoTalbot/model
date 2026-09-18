@@ -1,0 +1,20 @@
+[Unit]
+Description=Octopus Ecosystem Extractor (transcripts → people/tasks/reminders)
+After=octopus-whisper-worker.service postgresql.service
+Wants=octopus-whisper-worker.service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/octopus/secrets.env
+EnvironmentFile=/etc/octopus/octopus.env
+EnvironmentFile=/etc/octopus/ingest.env
+ExecStart=/opt/octopus-ingest-venv/bin/python /opt/octopus_eco_extractor.py
+Restart=on-failure
+RestartSec=10
+MemoryMax=300M
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=octopus-eco-extractor
+
+[Install]
+WantedBy=multi-user.target

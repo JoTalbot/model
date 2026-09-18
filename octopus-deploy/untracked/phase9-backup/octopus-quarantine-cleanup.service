@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus quarantine cleanup (files >30d old)
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-quarantine-cleanup.sh
+Nice=15
+IOSchedulingClass=idle

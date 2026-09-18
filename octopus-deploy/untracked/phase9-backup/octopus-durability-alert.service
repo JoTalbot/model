@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Durability Alert (off-host + pack-read, TG on change)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-durability-alert.sh
+Nice=15

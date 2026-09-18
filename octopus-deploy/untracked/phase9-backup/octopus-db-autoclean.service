@@ -1,0 +1,8 @@
+[Unit]
+Description=DB Auto-Cleanup
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-db-autoclean.sh
+User=root
+[Install]
+WantedBy=multi-user.target

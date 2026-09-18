@@ -1,0 +1,10 @@
+[Unit]
+Description=Octopus Reclaimer Timer (daily)
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=24h
+AccuracySec=1h
+
+[Install]
+WantedBy=timers.target

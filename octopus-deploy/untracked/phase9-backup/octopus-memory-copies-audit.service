@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus memory 2-copies invariant audit (writes cache)
+After=network.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/octopus/secrets.env
+ExecStart=/bin/bash -c "/opt/octopus-memory-copies-audit.py > /run/octopus/memory_copies_audit.json 2>/dev/null"

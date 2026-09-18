@@ -1,0 +1,10 @@
+[Unit]
+Description=Octopus weekly restore drill
+
+[Timer]
+OnCalendar=Mon 03:00
+RandomizedDelaySec=10min
+Unit=octopus-restore-drill.service
+
+[Install]
+WantedBy=timers.target

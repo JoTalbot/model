@@ -1,0 +1,42 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+*.egg
+.env
+# Local runtime/cache data
+.cache/
+.swarm_scratch/
+gemaxi_inspect/
+gemaxi_clean.zip
+*.zip
+# Local environments
+.venv/
+node_modules/
+.swarm_keys/
+.bak
+
+# Secrets and private cryptographic material
+wallets/
+secrets/
+credentials/
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa*
+id_ed25519*
+.env.*
+!.env.example
+
+# Backups
+*.bak
+*.bak.*
+data/

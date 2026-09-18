@@ -1,0 +1,9 @@
+[Unit]
+Description=Octopus Memory Restore Drill from AWS HTTP/IPFS
+After=network-online.target postgresql.service
+Wants=network-online.target
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/octopus/next-admin.env
+EnvironmentFile=/etc/octopus/replication.env
+ExecStart=/usr/bin/python3 /opt/octopus-memory-restore-drill.py

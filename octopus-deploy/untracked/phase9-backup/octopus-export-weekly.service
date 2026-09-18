@@ -1,0 +1,5 @@
+[Unit]
+Description=Octopus weekly user export
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-export-user.sh

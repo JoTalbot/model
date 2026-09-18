@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Octopus EC2 Memory Restore Drill daily
+
+[Timer]
+OnBootSec=10min
+OnCalendar=*-*-* 04:00:00
+RandomizedDelaySec=600
+Persistent=true
+
+[Install]
+WantedBy=timers.target

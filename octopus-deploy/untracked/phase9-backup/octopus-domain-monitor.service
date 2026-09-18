@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Public Domain Monitor (autosklo.org.ua)
+After=network-online.target cloudflared.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-domain-monitor.sh
+Nice=15

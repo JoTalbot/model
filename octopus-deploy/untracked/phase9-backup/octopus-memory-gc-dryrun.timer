@@ -1,0 +1,8 @@
+[Unit]
+Description=Run Octopus Memory GC dry-run hourly
+[Timer]
+OnBootSec=12min
+OnUnitActiveSec=1h
+Unit=octopus-memory-gc-dryrun.service
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,14 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Octopus historical news sentiment scoring (resume-safe)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python -u /opt/octopus/scripts/aios/collectors/score_historical_sentiment.py --batch-limit 400
+
+[Install]
+WantedBy=multi-user.target

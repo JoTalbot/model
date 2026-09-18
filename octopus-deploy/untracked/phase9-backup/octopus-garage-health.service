@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Garage/JuiceFS Health Probe
+After=garage.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-garage-health.py
+User=root

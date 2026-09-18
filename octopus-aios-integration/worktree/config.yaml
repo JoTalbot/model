@@ -1,0 +1,34 @@
+node:
+  port: 8000
+  bootstrap: []
+  advertise_host: "127.0.0.1"
+
+llm:
+  keys: []
+  models: ["openai/gpt-3.5-turbo"]
+  local:
+    enabled: true
+    base_url: "http://127.0.0.1:11434/v1"
+    models: ["llama3"]
+    prefer_local: true
+
+agents:
+  - name: assistant
+    role: general
+    model: openai/gpt-3.5-turbo
+    system_prompt: "You are a helpful local-first memory assistant."
+
+api:
+  enabled: true
+  port: 9100
+
+memory_facade:
+  enabled: true
+  scratch_root: ".swarm_scratch"
+  cloud_paste:
+    enabled: true
+    auto_fallback_order: ["pasters", "pasteee"]
+
+chat:
+  selector: "round_robin"
+  max_rounds: 10

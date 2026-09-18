@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Integration Test
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-integration-test.sh
+User=root
+[Install]
+WantedBy=multi-user.target

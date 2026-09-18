@@ -1,0 +1,7 @@
+[Unit]
+Description=Hourly Storage Profile
+[Timer]
+OnCalendar=*-*-* *:30:00
+Persistent=true
+[Install]
+WantedBy=timers.target

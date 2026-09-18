@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Memory Replicator Service
+After=postgresql.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-memory-replicator.py
+EnvironmentFile=/etc/octopus/secrets.env

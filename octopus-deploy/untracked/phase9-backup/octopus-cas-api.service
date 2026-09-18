@@ -1,0 +1,16 @@
+[Unit]
+Description=Octopus Unified CAS API (read-only, loopback)
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/octopus-cas-api.py
+Restart=always
+RestartSec=10
+MemoryHigh=200M
+MemoryMax=300M
+CPUQuota=50%
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

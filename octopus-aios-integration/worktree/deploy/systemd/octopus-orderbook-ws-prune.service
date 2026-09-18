@@ -1,0 +1,11 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Octopus Orderbook WS research DB retention prune (7d raw / 60d minute)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python -u /opt/octopus/scripts/aios/collectors/prune_orderbook_ws.py --db /opt/octopus/data/quant/orderbooks.sqlite --raw-days 7 --keep-days 60

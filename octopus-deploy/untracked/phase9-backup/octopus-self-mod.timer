@@ -1,0 +1,10 @@
+[Unit]
+Description=Octopus Self-Modification Timer (every 30 min)
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=30min
+AccuracySec=2min
+
+[Install]
+WantedBy=timers.target

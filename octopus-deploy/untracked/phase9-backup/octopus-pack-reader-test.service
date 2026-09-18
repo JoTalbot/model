@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Pack Reader Integrity Test
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-pack-reader-test.py
+User=root
+[Install]
+WantedBy=multi-user.target

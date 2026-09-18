@@ -1,0 +1,11 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Octopus OLX market snapshot (VAZ/GAZel niches)
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python /opt/octopus/scripts/aios/collectors/run_market_digest.py
+StandardOutput=append:/opt/octopus/logs/market_digest.log
+StandardError=append:/opt/octopus/logs/market_digest.log

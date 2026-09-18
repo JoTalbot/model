@@ -1,0 +1,8 @@
+[Unit]
+Description=Run Octopus IPFS Pin Coordinator every 10 minutes
+[Timer]
+OnBootSec=8min
+OnUnitActiveSec=10min
+Unit=octopus-ipfs-pin-coordinator.service
+[Install]
+WantedBy=timers.target

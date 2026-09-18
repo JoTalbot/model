@@ -1,0 +1,8 @@
+[Unit]
+Description=Data Quality Report
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-data-quality.sh
+User=root
+[Install]
+WantedBy=multi-user.target

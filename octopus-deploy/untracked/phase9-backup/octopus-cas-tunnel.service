@@ -1,0 +1,18 @@
+[Unit]
+Description=Cloudflare quick tunnel for Octopus CAS-API
+After=network.target octopus-cas-api.service
+Requires=octopus-cas-api.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cloudflared tunnel --url http://127.0.0.1:9540 --no-autoupdate
+Restart=always
+RestartSec=15
+MemoryHigh=80M
+MemoryMax=120M
+CPUQuota=20%
+StandardOutput=append:/var/log/octopus-cas-tunnel.log
+StandardError=append:/var/log/octopus-cas-tunnel.log
+
+[Install]
+WantedBy=multi-user.target

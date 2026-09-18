@@ -1,0 +1,7 @@
+[Unit]
+Description=Octopus guarded local child autoscaler (already-paid host only)
+After=octopus.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-autoscale-local.py --apply --max-port 8305

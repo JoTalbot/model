@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+"""Bounded read-only system auditor."""
+import json,subprocess,sys
+from datetime import datetime,timezone
+def now(): return datetime.now(timezone.utc).isoformat()
+def run():
+    r = subprocess.run(["ps","-eo","pid,pcpu,pmem,comm","--no-headers","--sort=-pcpu"],
+                     capture_output=True,text=True,timeout=5)
+    top=[]
+    for line in r.stdout.splitlines()[:10]:
+        p=line.split()
+        if len(p)>=4:
+            try: top.append({"pid":int(p[0]),"cpu":float(p[1]),"mem":float(p[2]),"comm":p[3]})
+            except: pass
+    df_r=subprocess.run(["df","-P","/"],capture_output=True,text=True,timeout=5)
+    disk_pct=0
+    parts=df_r.stdout.splitlines()
+    if len(parts)>=2:
+        p=parts[1].split()
+        if len(p)>=5: disk_pct=int(p[4].rstrip("%"))
+    up_r=subprocess.run(["uptime"],capture_output=True,text=True,timeout=3)
+    return {"ok":disk_pct<95,"disk_pct":disk_pct,"top_processes":top[:5],
+            "uptime":up_r.stdout.strip()[:100],
+            "summary":{"disk_pct":disk_pct,"top_proc":top[0]["comm"] if top else "none"}}
+def main():
+    data=run(); data["timestamp"]=now(); data["read_only"]=True
+    print(json.dumps(data,indent=2)); return 0 if data.get("ok",True) else 1
+if __name__=="__main__": sys.exit(main())

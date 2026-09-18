@@ -1,0 +1,5 @@
+[Unit]
+Description=Octopus AI daily summary (text+voice)
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-ai-rewriter.sh

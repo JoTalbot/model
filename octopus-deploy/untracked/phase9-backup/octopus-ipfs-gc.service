@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus IPFS repo GC
+After=docker.service
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-ipfs-gc.sh
+TimeoutSec=120
+StandardOutput=journal

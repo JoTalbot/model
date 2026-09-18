@@ -1,0 +1,18 @@
+# Wave 5, item 20. Disabled by default — enable explicitly.
+# NOTE: dashboard_v3 needs nicegui (not installed in prod venv); reference only.
+[Unit]
+Description=Octopus Dashboard v3 (accounts summary)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python /opt/octopus/swarm/dashboards/dashboard_v3.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+StandardOutput=append:/opt/octopus/logs/dashboard_v3.log
+StandardError=append:/opt/octopus/logs/dashboard_v3.log
+
+[Install]
+WantedBy=multi-user.target

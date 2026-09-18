@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Prometheus dynamic target sync from nodes.json
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-prom-targets.py

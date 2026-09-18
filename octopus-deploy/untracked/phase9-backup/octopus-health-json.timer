@@ -1,0 +1,7 @@
+[Unit]
+Description=Every-minute Health JSON writer
+[Timer]
+OnCalendar=*:*:0
+Persistent=true
+[Install]
+WantedBy=timers.target

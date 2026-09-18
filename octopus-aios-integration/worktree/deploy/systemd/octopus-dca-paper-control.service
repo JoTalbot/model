@@ -1,0 +1,17 @@
+[Unit]
+Description=Octopus DCA portfolio CONTROL (plain DCA, A/B vs VA main)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+Environment=OCTOPUS_ROOT=/opt/octopus
+Environment=OCTOPUS_DATA_DIR=/var/lib/octopus
+Environment=DCA_CONFIG=dca_portfolio_control
+ExecStart=/opt/aios-venv/bin/python -u /opt/octopus/scripts/aios/run_dca_paper.py
+
+[Install]
+WantedBy=multi-user.target

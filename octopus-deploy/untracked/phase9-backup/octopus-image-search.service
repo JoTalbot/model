@@ -1,0 +1,12 @@
+[Unit]
+Description=Octopus Image Search API
+After=network.target
+
+[Service]
+Type=simple
+User=postgres
+ExecStart=/usr/bin/python3 /opt/octopus-image-search.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

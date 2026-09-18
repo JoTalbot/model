@@ -1,0 +1,14 @@
+[Unit]
+Description=Octopus LLM Development Loop
+After=network.target octopus.service
+
+[Service]
+Type=oneshot
+MemoryHigh=600M
+MemoryMax=800M
+CPUQuota=40%
+ExecStart=/usr/bin/python3 /opt/octopus-dev-agent.py
+EnvironmentFile=/etc/octopus/secrets.env
+
+[Install]
+WantedBy=multi-user.target

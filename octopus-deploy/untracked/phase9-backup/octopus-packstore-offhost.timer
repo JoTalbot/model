@@ -1,0 +1,10 @@
+[Unit]
+Description=Octopus Packstore Off-host Sync every 6h
+
+[Timer]
+OnCalendar=*-*-* 00,06,12,18:15:00
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

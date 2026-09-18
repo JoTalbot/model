@@ -1,0 +1,10 @@
+[Unit]
+Description=Octopus Memory Mirror to Garage S3
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-s3-mirror.py
+Environment=DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/app_db
+
+[Install]
+WantedBy=multi-user.target

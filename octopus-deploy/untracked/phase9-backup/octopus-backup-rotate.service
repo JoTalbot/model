@@ -1,0 +1,8 @@
+[Unit]
+Description=Backup Rotation
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-backup-rotate.sh
+User=root
+[Install]
+WantedBy=multi-user.target

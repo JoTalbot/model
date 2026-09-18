@@ -1,0 +1,14 @@
+[Unit]
+Description=Cloudflared Tunnel for Octopus DevPanel
+After=octopus-devpanel.service
+Wants=octopus-devpanel.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cloudflared tunnel --url http://127.0.0.1:9550 --no-autoupdate
+Restart=always
+RestartSec=5
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target

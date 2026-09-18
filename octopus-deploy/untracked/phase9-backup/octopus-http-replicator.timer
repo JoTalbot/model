@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Octopus HTTP Memory Replicator every 10 minutes
+
+[Timer]
+OnBootSec=7min
+OnUnitActiveSec=10min
+Unit=octopus-http-replicator.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,8 @@
+[Unit]
+Description=Sunday weekly review 20:00 Kyiv (17:00 UTC)
+[Timer]
+OnCalendar=Sun *-*-* 17:00:00
+Persistent=true
+Unit=octopus-weekly-review.service
+[Install]
+WantedBy=timers.target

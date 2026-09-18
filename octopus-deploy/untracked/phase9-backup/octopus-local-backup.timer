@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Octopus Local Backup daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+AccuracySec=1h
+
+[Install]
+WantedBy=timers.target

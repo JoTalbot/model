@@ -1,0 +1,9 @@
+[Unit]
+Description=Weekly DCA portfolio Telegram report
+
+[Timer]
+OnCalendar=Mon *-*-* 18:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

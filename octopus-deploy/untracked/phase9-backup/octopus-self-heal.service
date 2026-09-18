@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Self-Healing Watchdog
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-self-heal.sh
+User=root
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=Octopus periodic smoke test
+After=network.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/octopus/secrets.env
+MemoryHigh=200M
+MemoryMax=250M
+CPUQuota=20%
+ExecStart=/opt/octopus-smoke.sh
+StandardOutput=journal

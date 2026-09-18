@@ -1,0 +1,13 @@
+# Wave 5, item 5. Disabled by default — enable explicitly.
+[Unit]
+Description=Octopus Quant Signal Monitor (read-only)
+After=aios-market-data.service aios-quant-ml-inference.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python /opt/octopus/scripts/aios/research/generate_quant_signal_product.py
+
+[Install]
+WantedBy=multi-user.target

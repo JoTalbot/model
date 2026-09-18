@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus sync dynamic child control ports into registry
+After=octopus.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/octopus/secrets.env
+ExecStart=/opt/octopus-sync-control-ports.py

@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Octopus SLO alert bridge every 10 minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=10min
+AccuracySec=30s
+Persistent=true
+Unit=octopus-slo-alert.service
+
+[Install]
+WantedBy=timers.target

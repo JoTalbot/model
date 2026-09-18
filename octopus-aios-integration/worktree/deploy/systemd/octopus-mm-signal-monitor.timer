@@ -1,0 +1,10 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Every-5-min MM live signal sampling
+
+[Timer]
+OnCalendar=*:0/5
+Persistent=false
+
+[Install]
+WantedBy=timers.target

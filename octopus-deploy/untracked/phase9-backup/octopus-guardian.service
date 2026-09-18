@@ -1,0 +1,6 @@
+[Unit]
+Description=Octopus Self-Healing Guardian
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-guardian.py

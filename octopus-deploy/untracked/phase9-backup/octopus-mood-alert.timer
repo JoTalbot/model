@@ -1,0 +1,8 @@
+[Unit]
+Description=Check mood every 6h
+[Timer]
+OnBootSec=30min
+OnUnitActiveSec=6h
+Unit=octopus-mood-alert.service
+[Install]
+WantedBy=timers.target

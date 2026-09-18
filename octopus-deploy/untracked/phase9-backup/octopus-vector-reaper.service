@@ -1,0 +1,11 @@
+[Unit]
+Description=Octopus Vector Reaper
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-vector-reaper.py
+EnvironmentFile=/etc/octopus/secrets.env
+
+[Install]
+WantedBy=multi-user.target

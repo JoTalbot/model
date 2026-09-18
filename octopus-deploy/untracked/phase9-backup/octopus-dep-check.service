@@ -1,0 +1,8 @@
+[Unit]
+Description=Daily Dependency Check
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-dep-check.sh
+User=root
+[Install]
+WantedBy=multi-user.target

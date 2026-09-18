@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Restore Drill (weekly backup validation)
+After=postgresql.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-restore-drill.sh
+StandardOutput=journal

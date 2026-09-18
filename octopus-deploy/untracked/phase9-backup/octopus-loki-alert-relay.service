@@ -1,0 +1,7 @@
+[Unit]
+Description=Octopus Loki alerts → Telegram relay
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-loki-alert-relay.sh
+TimeoutSec=30
+StandardOutput=journal

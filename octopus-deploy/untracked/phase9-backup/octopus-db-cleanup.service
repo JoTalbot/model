@@ -1,0 +1,9 @@
+[Unit]
+Description=Octopus DB Cleanup (offline nodes)
+After=postgresql.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/octopus/secrets.env
+ExecStart=/usr/bin/python3 /opt/octopus-db-cleanup.py
+StandardOutput=journal

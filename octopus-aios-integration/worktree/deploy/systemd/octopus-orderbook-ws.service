@@ -1,0 +1,17 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Octopus Orderbook WebSocket collector (Binance depth20@100ms, BTC/ETH/SOL)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python -u /opt/octopus/scripts/aios/collectors/collect_orderbook_ws.py --pairs BTC ETH SOL XRP BNB DOGE ADA TRX TON LINK AVAX UNI NEAR LTC DOT SUI APT ARB OP INJ --interval 1.0 --db /opt/octopus/data/quant/orderbooks.sqlite --full-pairs BTC ETH
+Restart=always
+RestartSec=10
+MemoryMax=1536M
+
+[Install]
+WantedBy=multi-user.target

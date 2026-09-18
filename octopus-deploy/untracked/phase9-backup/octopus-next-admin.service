@@ -1,0 +1,37 @@
+# /etc/systemd/system/octopus-next-admin.service
+[Unit]
+Description=Octopus Next.js Admin UI (production)
+Requires=docker.service
+After=docker.service postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=15
+WorkingDirectory=/opt/octopus-next-admin
+Environment=NEXT_TELEMETRY_DISABLED=1
+Environment=NODE_ENV=production
+ExecStartPre=-/usr/bin/docker rm -f octopus-next-admin
+ExecStart=/usr/bin/docker run --rm --name octopus-next-admin --network host \
+    --memory 512m --memory-swap 768m \
+  --env-file /etc/octopus/next-admin.env \
+  -e NEXT_TELEMETRY_DISABLED=1 \
+  -e NODE_ENV=production \
+  -e PORT=9500 \
+  -e HOSTNAME=127.0.0.1 \
+  -v /opt/octopus-next-admin:/app \
+  -v /var/lib/octopus/memory_pool:/var/lib/octopus/memory_pool \
+  -v /var/lib/octopus/ocr_queue:/var/lib/octopus/ocr_queue \
+  -v /var/lib/octopus/restore_drills:/var/lib/octopus/restore_drills:ro \
+  -v /var/lib/octopus/garage_preflight:/var/lib/octopus/garage_preflight:ro \
+  -v /var/backups/octopus:/var/backups/octopus:ro \
+  -v /usr/local/sbin/octopus-garage-freeze-backup.sh:/usr/local/sbin/octopus-garage-freeze-backup.sh:ro \
+  -v /root/agents/-Octopus/instructions:/octopus-instructions:ro \
+  -w /app \
+  node:22-bookworm-slim \
+  npx next start -p 9500 -H 127.0.0.1
+ExecStop=/usr/bin/docker stop -t 10 octopus-next-admin
+
+[Install]
+WantedBy=multi-user.target

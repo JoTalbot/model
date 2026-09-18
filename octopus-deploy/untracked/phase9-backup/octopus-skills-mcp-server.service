@@ -1,0 +1,12 @@
+[Unit]
+Description=Octopus Skills MCP TCP Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/python3 /root/agents/-Octopus/skills/mcp/tcp_mcp_server.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

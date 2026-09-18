@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Memory Manifest (per-backend sha256 + cross-check)
+After=network-online.target octopus-aws-tunnel.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-memory-manifest.py
+Nice=15

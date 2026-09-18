@@ -1,0 +1,47 @@
+"""Pluggable memory facade adapters."""
+
+from swarm.memory.adapters.obsidian import ObsidianVaultAdapter
+from swarm.memory.adapters.paste_cloud import (
+    BashuploadAdapter,
+    CatboxAdapter,
+    ClbinAdapter,
+    DpasteAdapter,
+    FilebinAdapter,
+    FileIoAdapter,
+    HastebinAdapter,
+    IxioAdapter,
+    LitterboxAdapter,
+    NullpointerAdapter,
+    PasteEEAdapter,
+    PasteRsAdapter,
+    PixelDrainAdapter,
+    RentryAdapter,
+    SprungeAdapter,
+    TelegraphAdapter,
+    TermbinAdapter,
+    TmpFilesAdapter,
+    TransferShAdapter,
+)
+
+__all__ = [
+    "BashuploadAdapter",
+    "CatboxAdapter",
+    "ClbinAdapter",
+    "DpasteAdapter",
+    "FileIoAdapter",
+    "FilebinAdapter",
+    "HastebinAdapter",
+    "IxioAdapter",
+    "LitterboxAdapter",
+    "NullpointerAdapter",
+    "ObsidianVaultAdapter",
+    "PasteEEAdapter",
+    "PasteRsAdapter",
+    "PixelDrainAdapter",
+    "RentryAdapter",
+    "SprungeAdapter",
+    "TelegraphAdapter",
+    "TermbinAdapter",
+    "TmpFilesAdapter",
+    "TransferShAdapter",
+]

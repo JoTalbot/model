@@ -1,0 +1,10 @@
+[Unit]
+Description=Octopus Garage/JuiceFS Health Probe timer
+
+[Timer]
+OnCalendar=*:0/15
+Persistent=true
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target

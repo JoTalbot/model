@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus IPFS Pin Coordinator
+After=network-online.target postgresql.service
+Wants=network-online.target
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/octopus/next-admin.env
+ExecStart=/usr/bin/python3 /opt/octopus-ipfs-pin-coordinator.py

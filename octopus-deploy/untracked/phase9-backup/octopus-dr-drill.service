@@ -1,0 +1,12 @@
+[Unit]
+Description=Octopus Disaster-Recovery Drill (restore packstore from replica + verify read)
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-dr-drill.py
+Nice=15
+MemoryMax=300M
+CPUQuota=30%
+TimeoutStartSec=900

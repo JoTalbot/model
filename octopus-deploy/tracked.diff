@@ -1,0 +1,84 @@
+diff --git a/run_node.py b/run_node.py
+index 98f0032..cbd0ea0 100755
+--- a/run_node.py
++++ b/run_node.py
+@@ -63,8 +63,23 @@ async def _build_bot(container: AppContainer) -> tuple[TelegramBot | None, async
+ 
+     proxy = os.environ.get("TELEGRAM_PROXY", "").strip()
+     client = httpx.AsyncClient(timeout=60.0, proxy=proxy) if proxy else None
++
++    # --- Arena AI configuration ---
++    # Default: use local nginx (port 80) with Host header routing.
++    # The /api/ location block proxies to arena via the SSE fix proxy.
++    arena_api_base = os.environ.get(
++        "ARENA_API_BASE",
++        "http://127.0.0.1/api",
++    ).strip()
++
+     bot = TelegramBot(
+-        BotConfig(token=token, allowed_chat_ids=allowed_chat_ids, open_access=open_access),
++        BotConfig(
++            token=token,
++            allowed_chat_ids=allowed_chat_ids,
++            open_access=open_access,
++            arena_api_base=arena_api_base,
++            arena_timeout_s=float(os.environ.get("ARENA_TIMEOUT_S", "120")),
++        ),
+         repository=repo,
+         metrics=metrics,
+         rag_fn=rag_fn,
+@@ -91,8 +106,10 @@ async def _build_bot(container: AppContainer) -> tuple[TelegramBot | None, async
+             f"queued tasks: `{len(tasks)}`",
+             f"records: `{len(all_rows)}` latest loaded; notes=`{len(notes)}` files=`{len(files)}`",
+             f"metric schemes: `{len(snap)}`",
++            f"arena api: `{arena_api_base}`",
+             "",
+-            "Try: `/list notes`, `/list files`, `/rag Иван`",
++            "Arena: `/arena <вопрос>` `/model` `/conv`",
++            "Swarm: `/list notes`, `/list files`, `/rag Иван`",
+         ]
+         return "\n".join(lines)
+ 
+@@ -112,7 +129,10 @@ async def _build_bot(container: AppContainer) -> tuple[TelegramBot | None, async
+     bot._handlers["/status"] = status_handler
+     bot._handlers["/files"] = files_handler
+     task = asyncio.create_task(bot.run(), name="TelegramBot")
+-    log.info("Telegram bot started in node process (allowlist=%s open_access=%s)", sorted(allowed_chat_ids), open_access)
++    log.info(
++        "Telegram bot started (allowlist=%s open_access=%s arena=%s)",
++        sorted(allowed_chat_ids), open_access, arena_api_base,
++    )
+     return bot, task
+ 
+ 
+@@ -156,4 +176,4 @@ def main() -> None:
+ 
+ 
+ if __name__ == "__main__":
+-    main()
++    main()
+\ No newline at end of file
+diff --git a/run_tg_bot.sh b/run_tg_bot.sh
+deleted file mode 100755
+index 21b25e4..0000000
+--- a/run_tg_bot.sh
++++ /dev/null
+@@ -1,18 +0,0 @@
+-#!/bin/sh
+-set -eu
+-args=""
+-ids="${TELEGRAM_ALLOWED_CHAT_IDS:-}"
+-ids=$(printf "%s" "$ids" | tr "; " ",,")
+-OLDIFS="$IFS"
+-IFS=","
+-for id in $ids; do
+-  if [ -n "$id" ]; then
+-    args="$args --allow $id"
+-  fi
+-done
+-IFS="$OLDIFS"
+-if [ "${TELEGRAM_OPEN_ACCESS:-0}" = "1" ]; then
+-  args="$args --open-access"
+-fi
+-# shellcheck disable=SC2086
+-exec octopus memory tg-bot --config /etc/octopus/config.yaml $args

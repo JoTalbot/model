@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Resource Governor (coexistence caps + human reserve)
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-resource-governor.sh
+Nice=10

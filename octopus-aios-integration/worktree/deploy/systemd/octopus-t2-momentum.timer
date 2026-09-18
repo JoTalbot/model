@@ -1,0 +1,10 @@
+# Wave 5, item 2. Disabled by default — enable explicitly.
+[Unit]
+Description=Daily T2 momentum signal (01:30 UTC)
+
+[Timer]
+OnCalendar=*-*-* 01:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

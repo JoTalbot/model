@@ -1,0 +1,12 @@
+[Unit]
+Description=Octopus Telegram Registry Reporter (one-shot)
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-tg-registry-report.py
+EnvironmentFile=/etc/octopus/secrets.env
+EnvironmentFile=/etc/octopus/octopus.env
+WorkingDirectory=/opt
+StandardOutput=journal
+StandardError=journal

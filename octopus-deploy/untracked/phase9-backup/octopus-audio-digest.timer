@@ -1,0 +1,8 @@
+[Unit]
+Description=Daily audio digest at 09:00 Kyiv (06:00 UTC)
+[Timer]
+OnCalendar=*-*-* 06:00:00
+Persistent=true
+Unit=octopus-audio-digest.service
+[Install]
+WantedBy=timers.target

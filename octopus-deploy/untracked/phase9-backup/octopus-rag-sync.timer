@@ -1,0 +1,10 @@
+[Unit]
+Description=Hourly RAG-sync
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=1h
+Unit=octopus-rag-sync.service
+
+[Install]
+WantedBy=timers.target

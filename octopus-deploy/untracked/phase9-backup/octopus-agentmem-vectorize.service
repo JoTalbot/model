@@ -1,0 +1,9 @@
+[Unit]
+Description=Octopus agent_memory vectorizer (semantic index of experience)
+After=postgresql.service
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-agentmem-vectorizer.py
+Nice=15
+MemoryMax=400M
+TimeoutStartSec=1800

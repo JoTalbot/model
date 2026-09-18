@@ -1,0 +1,247 @@
+{
+ "available": false,
+ "status": 403,
+ "error": "{\"error\":\"Not allowed\"}",
+ "models": null,
+ "flagPresent": false,
+ "flag": null,
+ "modelSelector": false,
+ "flagsCount": 0,
+ "opened": false,
+ "checkedAt": 1789724851,
+ "checks": 29,
+ "history": [
+  {
+   "at": 1789636563,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789636722,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789637478,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789638362,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789639277,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789640192,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789645617,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789649220,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789652826,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789656436,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789660034,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789663636,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789667234,
+   "opened": false,
+   "status": 401,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789670834,
+   "opened": false,
+   "status": 401,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789674434,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789678036,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789681637,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789685235,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789688839,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789692437,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789696041,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789699656,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789703257,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789706852,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789710453,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789714051,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789717652,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789721269,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  },
+  {
+   "at": 1789724851,
+   "opened": false,
+   "status": 403,
+   "flagPresent": false,
+   "flag": null,
+   "simulated": false
+  }
+ ]
+}

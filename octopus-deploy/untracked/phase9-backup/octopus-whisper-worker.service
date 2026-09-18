@@ -1,0 +1,24 @@
+[Unit]
+Description=Octopus Whisper Worker (auto-transcribe new audio uploads)
+After=octopus-ingest.service postgresql.service
+Wants=octopus-ingest.service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/octopus/ingest.env
+Environment=WHISPER_BIN=/opt/whisper.cpp/build/bin/whisper-cli
+Environment=WHISPER_MODEL=/opt/whisper.cpp/models/ggml-small.bin
+Environment=WHISPER_LANG=auto
+Environment=WHISPER_THREADS=4
+Environment=POLL_INTERVAL_SEC=10
+Environment=TMP_DIR=/tmp/octopus-whisper
+ExecStart=/opt/octopus-ingest-venv/bin/python /opt/whisper_worker.py
+Restart=on-failure
+RestartSec=10
+MemoryMax=2G
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=octopus-whisper-worker
+
+[Install]
+WantedBy=multi-user.target

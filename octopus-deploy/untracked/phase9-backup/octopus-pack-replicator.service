@@ -1,0 +1,10 @@
+[Unit]
+Description=Octopus Pack-aware Replicator
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-pack-replicator.py --dry-run
+User=root
+Nice=19
+IOSchedulingClass=idle
+[Install]
+WantedBy=multi-user.target

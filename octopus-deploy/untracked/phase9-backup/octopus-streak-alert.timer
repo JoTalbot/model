@@ -1,0 +1,8 @@
+[Unit]
+Description=Streak check at 21:00 Kyiv (18:00 UTC)
+[Timer]
+OnCalendar=*-*-* 18:00:00
+Persistent=true
+Unit=octopus-streak-alert.service
+[Install]
+WantedBy=timers.target

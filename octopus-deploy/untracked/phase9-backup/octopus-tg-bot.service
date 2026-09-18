@@ -1,0 +1,21 @@
+[Unit]
+Description=Octopus Telegram Bot (standalone with LLM + swarm commands)
+After=network.target octopus.service
+Wants=octopus.service
+
+[Service]
+EnvironmentFile=/etc/octopus/secrets.env
+Type=simple
+Restart=always
+RestartSec=10
+MemoryHigh=300M
+MemoryMax=400M
+CPUQuota=25%
+ExecStart=/usr/bin/python3 /opt/octopus-tg-bot.py
+EnvironmentFile=/etc/octopus/octopus.env
+Environment=OCTOPUS_CP_URL=http://127.0.0.1:9100
+Environment=OLLAMA_URL=http://127.0.0.1:11434
+Environment=OLLAMA_MODEL=qwen2.5:1.5b
+
+[Install]
+WantedBy=multi-user.target

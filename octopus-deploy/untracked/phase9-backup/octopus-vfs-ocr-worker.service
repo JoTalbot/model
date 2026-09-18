@@ -1,0 +1,9 @@
+[Unit]
+Description=Octopus VFS OCR Worker (file manager #files tab)
+After=octopus.service
+
+[Service]
+Type=oneshot
+Environment=OCTOPUS_SCRATCH=/opt/octopus/.swarm_scratch
+Environment=OCTOPUS_OCR_LANG=eng+rus+ukr
+ExecStart=/usr/bin/python3 /opt/octopus-vfs-ocr-worker.py

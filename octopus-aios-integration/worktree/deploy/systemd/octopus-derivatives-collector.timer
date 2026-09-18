@@ -1,0 +1,10 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Hourly derivatives history accumulation
+
+[Timer]
+OnCalendar=*:25
+Persistent=false
+
+[Install]
+WantedBy=timers.target

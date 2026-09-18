@@ -1,0 +1,11 @@
+[Unit]
+Description=Octopus Memory Indexer (one-shot)
+After=network.target postgresql@14-main.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-memory-indexer.py --oneshot
+EnvironmentFile=/etc/octopus/secrets.env
+WorkingDirectory=/opt
+StandardOutput=journal
+StandardError=journal

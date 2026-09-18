@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus RAG smoke probe (3 known-good queries)
+After=octopus-rag-search.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-rag-smoke-probe.py
+User=root

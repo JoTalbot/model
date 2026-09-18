@@ -1,0 +1,15 @@
+[Unit]
+Description=Cloudflared Tunnel for Octopus Audio V2
+After=octopus-audio-v2.service
+Wants=octopus-audio-v2.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cloudflared tunnel --url http://127.0.0.1:9561 --no-autoupdate
+Restart=always
+RestartSec=5
+StandardOutput=journal
+SyslogIdentifier=octopus-audio-v2-tunnel
+
+[Install]
+WantedBy=multi-user.target

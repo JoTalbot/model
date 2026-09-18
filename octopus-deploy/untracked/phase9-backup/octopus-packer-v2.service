@@ -1,0 +1,9 @@
+[Unit]
+Description=Octopus Packer v2 — pack loose objects into pack-files
+After=postgresql.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-packer-v2.py --target-size-mb 32 --frame-objects 200 --write-db
+Nice=15
+IOSchedulingClass=idle

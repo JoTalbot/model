@@ -1,0 +1,7 @@
+[Unit]
+Description=Hourly Integration Test
+[Timer]
+OnCalendar=*:15
+Persistent=true
+[Install]
+WantedBy=timers.target

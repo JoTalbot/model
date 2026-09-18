@@ -1,0 +1,17 @@
+[Unit]
+Description=Octopus External Node Watchdog
+After=network.target octopus.service
+Wants=octopus.service
+
+[Service]
+EnvironmentFile=/etc/octopus/secrets.env
+Type=simple
+Restart=always
+RestartSec=30
+MemoryHigh=200M
+MemoryMax=250M
+CPUQuota=15%
+ExecStart=/usr/bin/python3 /opt/octopus-watchdog.py
+
+[Install]
+WantedBy=multi-user.target

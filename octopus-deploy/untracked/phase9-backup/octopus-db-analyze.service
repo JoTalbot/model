@@ -1,0 +1,8 @@
+[Unit]
+Description=Daily DB Analysis
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-db-analyze.sh
+User=root
+[Install]
+WantedBy=multi-user.target

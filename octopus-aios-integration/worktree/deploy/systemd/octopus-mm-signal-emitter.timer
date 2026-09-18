@@ -1,0 +1,10 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=MM signal emission every 5 minutes
+
+[Timer]
+OnCalendar=*:0/15
+Persistent=false
+
+[Install]
+WantedBy=timers.target

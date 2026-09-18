@@ -1,0 +1,5 @@
+[Unit]
+Description=Octopus → Obsidian vault export
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-obsidian-export.sh

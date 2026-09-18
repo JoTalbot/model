@@ -1,0 +1,19 @@
+[Unit]
+Description=Octopus Audio Transcribe V2 (Recordings + Insights + Vector Memory)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/octopus-audio-v2
+EnvironmentFile=/etc/octopus/audio-v2.env
+ExecStart=/usr/bin/npx next start -p 9561 -H 127.0.0.1
+Restart=on-failure
+RestartSec=5
+MemoryMax=768M
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=octopus-audio-v2
+
+[Install]
+WantedBy=multi-user.target

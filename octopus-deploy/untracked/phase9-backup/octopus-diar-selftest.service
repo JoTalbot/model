@@ -1,0 +1,10 @@
+[Unit]
+Description=Octopus Diarization self-test (ECAPA)
+After=octopus-whisper-worker.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-diar-selftest.sh
+Nice=15
+MemoryMax=2G
+CPUQuota=150%

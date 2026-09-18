@@ -1,0 +1,8 @@
+[Unit]
+Description=Hourly Obsidian export
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=1h
+Unit=octopus-obsidian-export.service
+[Install]
+WantedBy=timers.target

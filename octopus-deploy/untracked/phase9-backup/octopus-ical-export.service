@@ -1,0 +1,5 @@
+[Unit]
+Description=Octopus iCal export
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-ical-export.sh

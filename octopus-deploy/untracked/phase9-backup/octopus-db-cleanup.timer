@@ -1,0 +1,11 @@
+[Unit]
+Description=Octopus DB Cleanup timer (every 30 min)
+Requires=octopus-db-cleanup.service
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=30min
+Unit=octopus-db-cleanup.service
+
+[Install]
+WantedBy=timers.target

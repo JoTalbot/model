@@ -1,0 +1,7 @@
+[Unit]
+Description=Octopus Audio Transcript Sync
+
+[Service]
+Type=oneshot
+User=postgres
+ExecStart=/opt/octopus-audio-sync.py

@@ -1,0 +1,7 @@
+[Unit]
+Description=Octopus Quiet Scheduler (auto quiet-hours from human_consent.env)
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-quiet-scheduler.sh
+Nice=15

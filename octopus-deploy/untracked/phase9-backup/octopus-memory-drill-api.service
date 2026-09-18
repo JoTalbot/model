@@ -1,0 +1,16 @@
+[Unit]
+Description=Octopus Memory Restore Drill local API
+After=network-online.target postgresql.service
+Wants=network-online.target
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+EnvironmentFile=-/etc/octopus/next-admin.env
+EnvironmentFile=/etc/octopus/replication.env
+MemoryHigh=150M
+MemoryMax=200M
+CPUQuota=10%
+ExecStart=/usr/bin/python3 /opt/octopus-memory-drill-api.py
+[Install]
+WantedBy=multi-user.target

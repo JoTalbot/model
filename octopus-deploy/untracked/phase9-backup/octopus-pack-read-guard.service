@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Pack-Read Guard (durability check)
+After=postgresql.service octopus-cas-api.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-pack-read-guard.py --sample 50 --json
+Nice=10

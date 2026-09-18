@@ -1,0 +1,8 @@
+[Unit]
+Description=Resource Alert Check
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-resource-alert.sh
+User=root
+[Install]
+WantedBy=multi-user.target

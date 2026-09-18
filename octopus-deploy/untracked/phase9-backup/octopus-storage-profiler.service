@@ -1,0 +1,8 @@
+[Unit]
+Description=Hourly Storage Profile
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-storage-profiler.sh
+User=root
+[Install]
+WantedBy=multi-user.target

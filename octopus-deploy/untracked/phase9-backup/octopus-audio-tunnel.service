@@ -1,0 +1,15 @@
+[Unit]
+Description=Cloudflared Tunnel for Octopus Audio Transcribe
+After=octopus-audio-transcribe.service
+Wants=octopus-audio-transcribe.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cloudflared tunnel --url http://127.0.0.1:9560 --no-autoupdate
+Restart=always
+RestartSec=5
+StandardOutput=journal
+SyslogIdentifier=octopus-audio-tunnel
+
+[Install]
+WantedBy=multi-user.target

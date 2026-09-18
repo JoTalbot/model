@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Octopus Autonomous Swarm Auto-Healer Every 10 Minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=10min
+Unit=octopus-swarm-autoheal.service
+
+[Install]
+WantedBy=timers.target

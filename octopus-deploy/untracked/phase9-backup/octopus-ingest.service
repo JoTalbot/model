@@ -1,0 +1,18 @@
+[Unit]
+Description=Octopus Ingest API (Android → swarm → CAS → V1/V2)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/octopus/ingest.env
+ExecStart=/opt/octopus-ingest-venv/bin/uvicorn ingest_api:app --host 127.0.0.1 --port 9571 --app-dir /opt
+Restart=on-failure
+RestartSec=5
+MemoryMax=400M
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=octopus-ingest
+
+[Install]
+WantedBy=multi-user.target

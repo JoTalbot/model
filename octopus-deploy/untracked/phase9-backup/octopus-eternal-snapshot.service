@@ -1,0 +1,13 @@
+[Unit]
+Description=Octopus Eternal Snapshot Generator and Multi-Cloud Publisher
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus/octopus-eternal-snapshot.py
+Nice=19
+IOSchedulingClass=idle
+User=root
+WorkingDirectory=/opt/octopus
+StandardOutput=journal
+StandardError=journal

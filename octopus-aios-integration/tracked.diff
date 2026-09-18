@@ -1,0 +1,314 @@
+diff --git a/swarm/runtime_patch.py.bak.20260824212306 b/swarm/runtime_patch.py.bak.20260824212306
+deleted file mode 100755
+index f39f2ac..0000000
+--- a/swarm/runtime_patch.py.bak.20260824212306
++++ /dev/null
+@@ -1,308 +0,0 @@
+-"""
+-swarm/runtime_patch.py
+-───────────────────────
+-Патч для AppContainer.from_config и AppRuntime.start —
+-подключает HandshakeManager, NodeKeys и auth-пару.
+-
+-Как применить
+-─────────────
+-В swarm/runtime.py найди AppContainer.from_config и добавь в конце:
+-
+-    from swarm.runtime_patch import patch_container
+-    patch_container(container, cfg)
+-    return container
+-
+-И в AppRuntime.start, после await c.kad.start(...):
+-
+-    from swarm.runtime_patch import runtime_post_start
+-    await runtime_post_start(self)
+-
+-Или просто замени импорт runtime в node.py/cli.py на этот файл —
+-он реэкспортирует AppContainer и AppRuntime с нужными изменениями.
+-
+-Изменения
+-─────────
+-  AppContainer:
+-    + signer          (AuthSigner)
+-    + verifier        (AuthVerifier)
+-    + node_keys       (NodeKeys)
+-    + peer_registry   (PeerKeyRegistry)
+-    + handshake_mgr   (HandshakeManager)
+-
+-  AppRuntime.start:
+-    + HandshakeManager регистрирует RPC-обработчики
+-    + При bootstrap — выполняет handshake с seed-нодой
+-
+-  AppRuntime._register_rpc_handlers:
+-    + "peer_list"    — список известных пиров
+-    + "peer_keys"    — публичные ключи пиров
+-"""
+-from __future__ import annotations
+-
+-import logging
+-from typing import TYPE_CHECKING
+-import os
+-
+-if TYPE_CHECKING:
+-    from swarm.runtime import AppContainer, AppRuntime
+-
+-logger = logging.getLogger(__name__)
+-
+-
+-# ══════════════════════════════════════════════════════════════════════════════
+-# patch_container — вызывается из AppContainer.from_config
+-# ══════════════════════════════════════════════════════════════════════════════
+-
+-def patch_container(container: "AppContainer", cfg: dict) -> None:
+-    """
+-    Добавить auth/handshake компоненты в AppContainer.
+-    Вызывать сразу после создания rpc_client и rpc_server.
+-    """
+-    from swarm.network.auth import make_auth_pair
+-    from swarm.network.handshake import HandshakeManager, PeerKeyRegistry
+-
+-    auth_cfg = cfg.get("auth", {})
+-
+-    # PeerKeyRegistry — хранилище pubkey пиров (создаём ПЕРВЫМ)
+-    dsn = container.cfg.get("database_url") or os.environ.get("DATABASE_URL")
+-    registry = PeerKeyRegistry(dsn=dsn)
+-
+-    # Создаём signer / verifier / keys (передаём registry в verifier)
+-    signer, verifier = make_auth_pair(cfg, peer_registry=registry)
+-
+-    # Внедряем verifier в RPCServer и GossipProtocol
+-    container.rpc_server._verifier = verifier
+-    container.rpc_client._signer   = signer
+-    container.gossip._signer       = signer
+-    container.gossip._verifier     = verifier
+-
+-    # HandshakeManager
+-    require_ed25519 = (
+-        auth_cfg.get("enabled", False)
+-        and auth_cfg.get("require_ed25519", False)
+-    )
+-    handshake_mgr = HandshakeManager(
+-        node_keys=signer._keys,
+-        registry=registry,
+-        require_ed25519=require_ed25519,
+-    )
+-
+-    # Сохраняем в контейнер (динамически — не меняем датакласс)
+-    container.signer        = signer
+-    container.verifier      = verifier
+-    container.node_keys     = signer._keys
+-    container.peer_registry = registry
+-    if getattr(container, "agent", None):
+-        container.agent.peer_registry = registry
+-    container.handshake_mgr = handshake_mgr
+-
+-    logger.info(
+-        "Auth patch applied: HMAC=%s Ed25519=%s",
+-        bool(auth_cfg.get("shared_secret")),
+-        require_ed25519,
+-    )
+-
+-
+-# ══════════════════════════════════════════════════════════════════════════════
+-# runtime_post_start — вызывается из AppRuntime.start после kad.start
+-# ══════════════════════════════════════════════════════════════════════════════
+-
+-async def runtime_post_start(runtime: "AppRuntime") -> None:
+-    """
+-    Регистрирует handshake RPC-обработчики и выполняет
+-    handshake с bootstrap-нодой если она задана.
+-    """
+-    c = runtime.container
+-
+-    mgr: HandshakeManager | None = getattr(c, "handshake_mgr", None)
+-    if mgr is None:
+-        return
+-
+-    # Регистрируем handshake RPC-методы
+-    mgr.register_rpc_handlers(c.rpc_server)
+-
+-    # Регистрируем дополнительные RPC для инспекции пиров
+-    _register_peer_rpc(c)
+-
+-    # Запускаем периодическую синхронизацию PeerRegistry -> gossip._peers
+-    _start_gossip_sync_loop(c)
+-
+-    # Handshake с bootstrap-нодой
+-    if c.bootstrap:
+-        await _handshake_with_bootstrap(c, mgr)
+-
+-
+-async def _handshake_with_siblings(c, mgr: "HandshakeManager", parent_host: str, parent_rpc_port: int) -> None:
+-    """Получить список пиров от parent и сделать handshake с каждым (sibling-регистрация)."""
+-    import asyncio
+-    try:
+-        result = await asyncio.wait_for(
+-            c.rpc_client.call(parent_host, parent_rpc_port, "peer_list", {}),
+-            timeout=10.0,
+-        )
+-        if not result:
+-            return
+-        peers = result.get("peers", [])
+-        logger.info("Sibling handshake: получили %d пиров от parent", len(peers))
+-        for peer in peers:
+-            addr = peer.get("address", "")
+-            nid  = peer.get("node_id", "")
+-            pub  = peer.get("pubkey", "")
+-            if not addr:
+-                continue
+-            try:
+-                h, rp = addr.rsplit(":", 1)
+-                rp = int(rp)
+-            except (ValueError, IndexError):
+-                continue
+-            # Не делаем handshake с самим собой или с parent'ом
+-            own_id = c.node_keys.node_id if hasattr(c, "node_keys") else ""
+-            if nid == own_id:
+-                continue
+-            if h == parent_host and rp == parent_rpc_port:
+-                continue
+-            logger.info("Sibling handshake → %s:%d (node_id=%s)", h, rp, nid or "?")
+-            try:
+-                own_adv = str((getattr(c, "cfg", {}) or {}).get("node", {}).get("advertise_host", "127.0.0.1"))
+-                await asyncio.wait_for(
+-                    mgr.initiate(
+-                        rpc_client=c.rpc_client,
+-                        peer_host=h,
+-                        peer_rpc_port=rp,
+-                        peer_node_id=nid,
+-                        expected_pubkey=pub,
+-                        own_rpc_port=getattr(c, "port", 0) + 2000,
+-                        peer_host_self=own_adv,
+-                    ),
+-                    timeout=15.0,
+-                )
+-            except Exception as exc:
+-                logger.debug("Sibling handshake error с %s:%d — %s", h, rp, exc)
+-    except Exception as exc:
+-        logger.warning("Sibling handshake fetch error: %s", exc)
+-
+-
+-async def _handshake_with_bootstrap(c, mgr: "HandshakeManager") -> None:
+-    """Выполнить handshake с seed-нодой (из --bootstrap)."""
+-    import os
+-    try:
+-        host, port_s = c.bootstrap.split(":")
+-        kad_port  = int(port_s)
+-        rpc_port  = kad_port + 2000   # соглашение: RPC = KAD + 2000
+-
+-        # Pinned-pubkey родителя — если передан через env при spawn
+-        parent_pub = os.environ.get("OCTOPUS_PARENT_PUBKEY", "").strip()
+-        parent_id  = os.environ.get("OCTOPUS_PARENT_NODE_ID", "").strip()
+-        if parent_pub:
+-            logger.info(
+-                "Bootstrap handshake: ожидаем pubkey родителя %s... (node_id=%s)",
+-                parent_pub[:12], parent_id or "?"
+-            )
+-
+-        own_adv = str((getattr(c, "cfg", {}) or {}).get("node", {}).get("advertise_host", "127.0.0.1"))
+-        success = await mgr.initiate(
+-            rpc_client=c.rpc_client,
+-            peer_host=host,
+-            peer_rpc_port=rpc_port,
+-            peer_node_id=parent_id,
+-            expected_pubkey=parent_pub,
+-            own_rpc_port=c.port + 2000,
+-            peer_host_self=own_adv,
+-        )
+-        if success:
+-            logger.info("Bootstrap handshake OK с %s:%d", host, rpc_port)
+-            # После успешного handshake с parent — делаем handshake с его пирами (сиблинги)
+-            import asyncio
+-            asyncio.create_task(_handshake_with_siblings(c, mgr, host, rpc_port))
+-        else:
+-            logger.warning(
+-                "Bootstrap handshake НЕ удался с %s:%d (продолжаем без верификации)",
+-                host, rpc_port,
+-            )
+-    except Exception as exc:
+-        logger.warning("Ошибка bootstrap handshake: %s", exc)
+-
+-
+-def _start_gossip_sync_loop(c) -> None:
+-    import asyncio
+-    async def loop():
+-        while True:
+-            await asyncio.sleep(15)
+-            _sync_registry_to_gossip(c)
+-    asyncio.create_task(loop())
+-
+-
+-def _sync_registry_to_gossip(c) -> None:
+-    import logging
+-    logger = logging.getLogger(__name__)
+-    gossip = getattr(c, 'gossip', None)
+-    registry = getattr(c, 'peer_registry', None)
+-    if gossip is None or registry is None:
+-        return
+-    for peer_info in registry.all_peers():
+-        addr = peer_info.address
+-        if not addr:
+-            continue
+-        try:
+-            host, rpc_port_s = addr.rsplit(':', 1)
+-            rpc_port = int(rpc_port_s)
+-            gossip_port = rpc_port - 1000
+-            gossip.add_peer(host, gossip_port)
+-            logger.info('Gossip peer added: %s:%d', host, gossip_port)
+-        except (ValueError, IndexError) as exc:
+-            logger.warning('Bad peer address: %s — %s', addr, exc)
+-
+-
+-def _register_peer_rpc(c) -> None:
+-    """Дополнительные RPC-методы для работы с реестром пиров."""
+-    registry = getattr(c, "peer_registry", None)
+-    if registry is None:
+-        return
+-
+-    async def peer_list_handler(params: dict) -> dict:
+-        import re as _re
+-        # Используем advertise_host из config чтобы внешние ноды могли достучаться
+-        adv_host = str((getattr(c, "cfg", {}) or {}).get("node", {}).get("advertise_host", ""))
+-        peers = []
+-        for p in registry.all_peers():
+-            addr = p.address
+-            # Если адрес - loopback и есть advertise_host - подменяем хост
+-            if adv_host and addr:
+-                m = _re.match(r"(127\.0\.0\.1|localhost)(:\d+)", addr)
+-                if m:
+-                    addr = adv_host + m.group(2)
+-            peers.append({
+-                "node_id":    p.node_id,
+-                "address":    addr,
+-                "pubkey":     p.pubkey_hex,
+-                "verified_at": p.verified_at,
+-            })
+-        return {"ok": True, "peers": peers, "count": len(peers)}
+-
+-    async def peer_keys_handler(params: dict) -> dict:
+-        node_id = params.get("node_id")
+-        if node_id:
+-            p = registry.get(node_id)
+-            if p:
+-                return {"ok": True, "node_id": p.node_id, "pubkey": p.pubkey_hex}
+-            return {"ok": False, "reason": "not_found"}
+-        # Все ключи
+-        result = {p.node_id: p.pubkey_hex for p in registry.all_peers()}
+-        return {"ok": True, "keys": result}
+-
+-    async def handshake_request_handler(params: dict) -> dict:
+-        """Инициировать handshake с указанным пиром по запросу."""
+-        host = params.get("host")
+-        port = params.get("port")
+-        if not host or not port:
+-            return {"ok": False, "reason": "missing host/port"}
+-        mgr = getattr(c, "handshake_mgr", None)
+-        if mgr is None:
+-            return {"ok": False, "reason": "no handshake manager"}
+-        own_rpc = getattr(c, "port", 8000) + 2000
+-        success = await mgr.initiate(c.rpc_client, host, int(port), own_rpc_port=own_rpc)
+-        return {"ok": success}
+-
+-    c.rpc_server.register("peer_list",         peer_list_handler)
+-    c.rpc_server.register("peer_keys",         peer_keys_handler)
+-    c.rpc_server.register("handshake_request", handshake_request_handler)

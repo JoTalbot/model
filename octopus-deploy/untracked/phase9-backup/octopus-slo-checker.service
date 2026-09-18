@@ -1,0 +1,9 @@
+[Unit]
+Description=Octopus SLO machine-readable checker
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-slo-checker.py
+Nice=10

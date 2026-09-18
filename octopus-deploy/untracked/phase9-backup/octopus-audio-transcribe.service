@@ -1,0 +1,19 @@
+[Unit]
+Description=Octopus Audio Transcribe (Next.js, LLM ambient audio)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/octopus-audio-transcribe
+EnvironmentFile=/etc/octopus/audio.env
+ExecStart=/usr/bin/npx next start -p 9560 -H 127.0.0.1
+Restart=on-failure
+RestartSec=5
+MemoryMax=768M
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=octopus-audio
+
+[Install]
+WantedBy=multi-user.target

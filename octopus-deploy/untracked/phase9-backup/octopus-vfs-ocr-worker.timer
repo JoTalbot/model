@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Octopus VFS OCR Worker every 5 minutes
+
+[Timer]
+OnBootSec=7min
+OnUnitActiveSec=5min
+Unit=octopus-vfs-ocr-worker.service
+
+[Install]
+WantedBy=timers.target

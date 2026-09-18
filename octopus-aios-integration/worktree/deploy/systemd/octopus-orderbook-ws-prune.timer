@@ -1,0 +1,11 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Hourly orderbook ws retention prune
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=600
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,9 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Octopus MM priority-queue fill calibration (100ms BTC/ETH stream)
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python -u /opt/octopus/scripts/aios/collectors/mm_queue_priority.py

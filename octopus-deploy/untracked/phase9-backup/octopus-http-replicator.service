@@ -1,0 +1,10 @@
+[Unit]
+Description=Octopus HTTP Memory Replicator Service
+After=network-online.target postgresql.service octopus-next-admin.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-http-replicator.py
+EnvironmentFile=/etc/octopus/replication.env
+EnvironmentFile=-/etc/octopus/next-admin.env

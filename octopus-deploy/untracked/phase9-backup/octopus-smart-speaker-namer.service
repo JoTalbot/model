@@ -1,0 +1,9 @@
+[Unit]
+Description=Octopus Smart Speaker Namer (AI alias assignment)
+After=network.target ollama.service postgresql.service
+Wants=ollama.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-ingest-venv/bin/python /opt/octopus/scripts/smart_speaker_namer.py
+User=root

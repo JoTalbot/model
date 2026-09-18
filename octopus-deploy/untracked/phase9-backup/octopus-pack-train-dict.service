@@ -1,0 +1,9 @@
+[Unit]
+Description=Octopus pack zstd dictionary retrainer
+After=postgresql.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-pack-train-dict.py
+Nice=15
+IOSchedulingClass=idle

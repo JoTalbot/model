@@ -1,0 +1,18 @@
+[Unit]
+Description=Octopus Multi-Master Active-Active Directory Synchronization Daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/octopus/octopus-multisync.py
+Restart=always
+RestartSec=15
+Nice=15
+IOSchedulingClass=idle
+User=root
+WorkingDirectory=/opt/octopus
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

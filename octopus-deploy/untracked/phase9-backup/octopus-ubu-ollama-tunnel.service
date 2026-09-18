@@ -1,0 +1,24 @@
+[Unit]
+Description=Octopus Ubu Ollama Tunnel (parent → ubu:11434)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ssh -NT \
+    -o "ServerAliveInterval=30" \
+    -o "ServerAliveCountMax=3" \
+    -o "ExitOnForwardFailure=yes" \
+    -o "StrictHostKeyChecking=no" \
+    -o "UserKnownHostsFile=/dev/null" \
+    -o "ConnectTimeout=5" \
+    -o "BatchMode=yes" \
+    -i /root/.ssh/id_ed25519 \
+    -L 11434:localhost:11434 \
+    -p 9922 root@localhost
+Restart=always
+RestartSec=15
+User=root
+
+[Install]
+WantedBy=multi-user.target

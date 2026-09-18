@@ -1,0 +1,16 @@
+[Unit]
+Description=Octopus Google Drive -> Contacts -> Notion Sync
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/opt/octopus/drive_notion_automation
+EnvironmentFile=/opt/octopus/drive_notion_automation/.env
+ExecStart=/opt/octopus/drive_notion_automation/.venv/bin/python /opt/octopus/drive_notion_automation/octopus_drive_notion_sync.py
+StandardOutput=append:/var/log/octopus-drive-notion-sync.log
+StandardError=append:/var/log/octopus-drive-notion-sync.log
+
+[Install]
+WantedBy=multi-user.target

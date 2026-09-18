@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head><title>Octopus Memory</title></head>
+<body>
+<h1>Octopus Memory Exchange</h1>
+<input type=file id=f>
+<div id=out></div>
+<script>
+document.getElementById('f').onchange = async (e) => {
+  const file = e.target.files[0];
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch('/api/v1/memory/upload', { method: 'POST', body: form });
+  const data = await res.json();
+  document.getElementById('out').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+};
+</script>
+</body>
+</html>

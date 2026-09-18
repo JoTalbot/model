@@ -1,0 +1,12 @@
+[Unit]
+Description=Octopus Swarm Load Forecaster
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-swarm-load-forecaster.py
+Nice=19
+IOSchedulingClass=idle
+
+[Install]
+WantedBy=multi-user.target

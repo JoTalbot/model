@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus load Monitor
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-load-monitor.sh
+User=root
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=Octopus Packstore Off-host Sync (durability replicas)
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/octopus-packstore-offhost-sync.py
+Nice=15
+MemoryMax=200M
+CPUQuota=25%
+TimeoutStartSec=900

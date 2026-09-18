@@ -1,0 +1,14 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Octopus MM signal emitter (trained model -> Telegram)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python -u /opt/octopus/scripts/aios/collectors/mm_signal_emitter.py --symbols ETH BNB SOL --up-thr 0.60 --down-thr 0.40
+
+[Install]
+WantedBy=multi-user.target

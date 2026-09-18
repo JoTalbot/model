@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Octopus Eternal Snapshot Every Hour and on Boot
+
+[Timer]
+OnBootSec=15min
+OnUnitActiveSec=1h
+Unit=octopus-eternal-snapshot.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,6 @@
+[Unit]
+Description=Octopus AWS Cost Monitor (#08/#09 money control)
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-aws-cost-monitor.sh
+Nice=15

@@ -1,0 +1,7 @@
+branch: arena/aios-integration
+85e1ae2b2845c8bdb251645e65dc12504df7a29e
+85e1ae2 wave5d: research runners x12 (stdlib x10, numpy-ref x2), ml code-only x15 (runnable x3), quant-ml libs x2, notebooks x3, 10 units disabled, ab_report moved to swarm/quant, 12 test files (266 passed incl waves1-4+5a+5b+5c)
+3d03ffb wave5c: collectors (15 scripts, ccxt-lazy x2, numpy-ref x3), quant engines x4 (data_collector ccxt-lazy), 23 units disabled, 3 test files (239 passed incl waves1-4+5a+5b)
+4623225 wave5b: freqtrade T2 (strategy+hyper+dry config, paper loop, executor dry-default, portfolio, validation set), momentum doc, 3 units disabled, 3 test files (219 passed incl waves1-4+5a)
+30488de wave5a: docs octopus_projects (30, rest already in wave1) + dashboards pkg (4 runnable + reference views/runners), 2 units disabled, 7 tests (206 passed incl waves1-4)
+a3b37fa wave4: quant paper engine (swarm/quant 15 modules), run_quant_trading runner, 2 quant-trading units (disabled), kraken secrets stripped + live-guard, web3/numpy optional (stdlib-first), OCTOPUS_QUANT_* env, 10 tests (199 passed incl waves1-3)

@@ -1,0 +1,21 @@
+[Unit]
+Description=Octopus Prometheus → Telegram alerts bridge
+After=network.target prometheus.service
+Wants=prometheus.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+EnvironmentFile=/etc/octopus/octopus.env
+EnvironmentFile=-/etc/octopus/secrets.env
+Environment=PROMETHEUS_URL=http://127.0.0.1:9090
+Environment=ALERT_POLL_SEC=60
+Environment=RESEND_FIRING_SEC=3600
+MemoryHigh=150M
+MemoryMax=200M
+CPUQuota=10%
+ExecStart=/usr/bin/python3 /opt/octopus-alerts-tg.py
+
+[Install]
+WantedBy=multi-user.target

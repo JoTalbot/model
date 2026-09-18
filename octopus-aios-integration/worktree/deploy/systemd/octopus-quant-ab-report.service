@@ -1,0 +1,9 @@
+# Wave 5, item 5. Disabled by default — enable explicitly.
+[Unit]
+Description=Octopus Directional v2 paper A/B weekly report (main vs control)
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python -u -m swarm.quant.quant_ab_report --notify

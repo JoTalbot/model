@@ -1,0 +1,8 @@
+[Unit]
+Description=Refresh iCal every 15min
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=15min
+Unit=octopus-ical-export.service
+[Install]
+WantedBy=timers.target

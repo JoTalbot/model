@@ -1,0 +1,19 @@
+[Unit]
+Description=Octopus Task Worker (LLM-powered)
+After=network.target octopus.service ollama.service
+Wants=octopus.service ollama.service
+
+[Service]
+EnvironmentFile=/etc/octopus/secrets.env
+Type=simple
+Restart=always
+RestartSec=15
+MemoryHigh=500M
+MemoryMax=600M
+CPUQuota=40%
+ExecStart=/usr/bin/python3 /opt/octopus-task-worker.py
+EnvironmentFile=/etc/octopus/octopus.env
+Environment=OLLAMA_MODEL=qwen2.5:0.5b
+
+[Install]
+WantedBy=multi-user.target

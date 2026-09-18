@@ -1,0 +1,17 @@
+.git
+.gitignore
+wallets
+secrets
+credentials
+.swarm_keys
+.swarm_scratch
+__pycache__
+*.pyc
+*.pyo
+*.bak
+*.bak.*
+*.pem
+*.key
+.pytest_cache
+.env
+.env.*

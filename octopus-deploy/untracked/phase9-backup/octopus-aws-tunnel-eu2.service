@@ -1,0 +1,17 @@
+[Unit]
+Description=SSH tunnel to AWS node aws-node-eu-2 (3.70.232.210) for Prometheus scrape
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=root
+MemoryHigh=80M
+MemoryMax=120M
+CPUQuota=10%
+ExecStart=/usr/bin/ssh -i /root/.ssh/octopus-aws-key-eu -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes -N -L 127.0.0.1:9731:127.0.0.1:9100 ubuntu@3.70.232.210
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target

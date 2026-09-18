@@ -1,0 +1,7 @@
+[Unit]
+Description=Octopus Image Sync Task
+
+[Service]
+Type=oneshot
+User=postgres
+ExecStart=/opt/octopus-image-sync.py

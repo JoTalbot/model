@@ -1,0 +1,15 @@
+[Unit]
+Description=Cloudflared Tunnel for Octopus Ingest
+After=octopus-ingest.service
+Wants=octopus-ingest.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cloudflared tunnel --url http://127.0.0.1:9571 --no-autoupdate
+Restart=always
+RestartSec=5
+StandardOutput=journal
+SyslogIdentifier=octopus-ingest-tunnel
+
+[Install]
+WantedBy=multi-user.target

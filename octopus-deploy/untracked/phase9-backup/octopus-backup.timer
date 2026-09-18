@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily Octopus backup at 03:00 UTC
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+Unit=octopus-backup.service
+
+[Install]
+WantedBy=timers.target

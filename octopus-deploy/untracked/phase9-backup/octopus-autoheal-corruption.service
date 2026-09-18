@@ -1,0 +1,8 @@
+[Unit]
+Description=Corruption Auto-Heal
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-autoheal-corruption.sh
+User=root
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus Alert Thresholds
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-alert-thresholds.sh
+User=root
+[Install]
+WantedBy=multi-user.target

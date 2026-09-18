@@ -1,0 +1,8 @@
+[Unit]
+Description=Weekly Safe Restart of Octopus Services
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-service-restart-all.sh
+User=root
+[Install]
+WantedBy=multi-user.target

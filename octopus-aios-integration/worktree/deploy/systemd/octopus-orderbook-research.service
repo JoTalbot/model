@@ -1,0 +1,16 @@
+# Wave 5, item 3. Disabled by default — enable explicitly.
+[Unit]
+Description=Octopus Public Orderbook Research Collector (no trading)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/octopus
+Environment=PYTHONPATH=/opt/octopus
+ExecStart=/opt/aios-venv/bin/python -u /opt/octopus/scripts/aios/collectors/collect_orderbook_snapshots.py daemon --symbols BTC ETH SOL --exchanges binance kucoin mexc okx bitstamp coinbase --interval 5 --depth 10 --retention-days 14
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target

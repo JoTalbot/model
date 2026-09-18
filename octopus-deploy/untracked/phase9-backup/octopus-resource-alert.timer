@@ -1,0 +1,7 @@
+[Unit]
+Description=Resource Alert Check (2min)
+[Timer]
+OnCalendar=*:0/2
+Persistent=true
+[Install]
+WantedBy=timers.target

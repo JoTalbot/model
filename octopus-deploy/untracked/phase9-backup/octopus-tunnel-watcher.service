@@ -1,0 +1,5 @@
+[Unit]
+Description=Octopus Tunnel URL Watcher (auto-update QR/hub on URL change)
+[Service]
+Type=oneshot
+ExecStart=/opt/octopus-tunnel-watcher.sh

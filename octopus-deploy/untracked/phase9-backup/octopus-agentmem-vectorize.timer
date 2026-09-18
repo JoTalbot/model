@@ -1,0 +1,8 @@
+[Unit]
+Description=Octopus agent_memory vectorize daily
+[Timer]
+OnCalendar=*-*-* 07:30:00
+Persistent=true
+RandomizedDelaySec=300
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,8 @@
+[Unit]
+Description=Run Octopus OCR Worker every 5 minutes
+[Timer]
+OnBootSec=9min
+OnUnitActiveSec=5min
+Unit=octopus-ocr-worker.service
+[Install]
+WantedBy=timers.target

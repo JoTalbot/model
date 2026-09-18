@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Octopus Secure Storage</title>
+    <style>
+        body { font-family: system-ui; background: #0f172a; color: #e2e8f0; padding: 2rem; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .card { background: #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+        input, textarea { width: 100%; padding: 0.75rem; border: 1px solid #334155; border-radius: 8px; background: #0f172a; color: white; margin-bottom: 1rem; }
+        button { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; background: #6366f1; color: white; }
+        button:hover { background: #4f46e5; }
+        .status { margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none; }
+        .success { background: #14532d; display: block; }
+        .error { background: #7f1d1d; display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Octopus Secure Storage</h1>
+        <div class="card">
+            <h2>🔑 Password</h2>
+            <input type="password" id="password" placeholder="Enter password...">
+            <button onclick="setPassword()">Set Password</button>
+            <div id="status" class="status"></div>
+        </div>
+        <div class="card">
+            <h2>📝 New Note</h2>
+            <textarea id="note" rows="4" placeholder="Note content..."></textarea>
+            <button onclick="saveNote()">💾 Save (Encrypted)</button>
+        </div>
+        <div class="card">
+            <h2>📂 Files</h2>
+            <button onclick="loadFiles()">🔄 Refresh</button>
+            <div id="files"></div>
+        </div>
+    </div>
+    <script src="crypto_client.js"></script>
+    <script>
+        const crypto = new OctopusCrypto();
+        let pwd = null;
+        const WEBDAV = 'http://178.105.142.113:8087/notes/';
+
+        async function setPassword() {
+            pwd = document.getElementById('password').value;
+            if (!pwd) { showStatus('Enter password', 'error'); return; }
+            showStatus('Password set', 'success');
+        }
+
+        async function saveNote() {
+            if (!pwd) { showStatus('Set password first', 'error'); return; }
+            const content = document.getElementById('note').value;
+            if (!content) return;
+            const encrypted = await crypto.encrypt({content, ts: Date.now()}, pwd);
+            await fetch(WEBDAV + 'enc_' + Date.now() + '.e2e', { method: 'PUT', body: encrypted });
+            showStatus('Note saved', 'success');
+            loadFiles();
+        }
+
+        async function loadFiles() {
+            const r = await fetch(WEBDAV);
+            document.getElementById('files').innerHTML = '<p>Loaded via WebDAV</p>';
+        }
+
+        function showStatus(msg, type) {
+            const el = document.getElementById('status');
+            el.textContent = msg;
+            el.className = 'status ' + type;
+        }
+    </script>
+</body>
+</html>

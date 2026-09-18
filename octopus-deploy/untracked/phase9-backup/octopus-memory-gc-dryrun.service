@@ -1,0 +1,7 @@
+[Unit]
+Description=Octopus Memory GC dry-run
+After=postgresql.service
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/octopus/next-admin.env
+ExecStart=/usr/bin/python3 /opt/octopus-memory-gc-dryrun.py
