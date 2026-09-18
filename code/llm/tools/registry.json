@@ -1,0 +1,62 @@
+{
+  "cluster_health": {
+    "name": "cluster_health",
+    "description": "Probes all 3 cluster nodes for connectivity.",
+    "file": "/opt/aios/tools/cluster_health.py",
+    "parameters": {},
+    "registered_at": "2026-09-02T14:11:32Z"
+  },
+  "vault_status": {
+    "name": "vault_status",
+    "description": "Queries OCI Vault Object Storage backups.",
+    "file": "/opt/aios/tools/vault_status.py",
+    "parameters": {},
+    "registered_at": "2026-09-02T14:11:32Z"
+  },
+  "memory_search": {
+    "name": "memory_search",
+    "description": "Semantic vector search across crystallized skill memory.",
+    "file": "/opt/aios/tools/memory_search.py",
+    "parameters": {
+      "query": "str"
+    },
+    "registered_at": "2026-09-02T14:11:32Z"
+  },
+  "disk_io_stats": {
+    "name": "disk_io_stats",
+    "description": "Измеряет статистику дискового ввода-вывода (/proc/diskstats) и возвращает прочитанные/записанные секторы.",
+    "file": "/opt/aios/tools/disk_io_stats.py",
+    "parameters": {},
+    "registered_at": "2026-09-02T13:47:39Z"
+  },
+  "network_latency_probe": {
+    "name": "network_latency_probe",
+    "description": "Измеряет сетевую задержку до ключевых DNS-серверов (1.1.1.1, 8.8.8.8) и возвращает средний ping в мс.",
+    "file": "/opt/aios/tools/network_latency_probe.py",
+    "parameters": {},
+    "registered_at": "2026-09-18T02:00:02Z"
+  },
+  "cpu_throttle_guard": {
+    "name": "cpu_throttle_guard",
+    "description": "Мониторит загрузку ядер CPU, троттлинг и среднее время ожидания I/O (iowait).",
+    "file": "/opt/aios/tools/cpu_throttle_guard.py",
+    "parameters": {},
+    "registered_at": "2026-09-02T14:06:37Z"
+  },
+  "google_provider_provisioner": {
+    "name": "google_provider_provisioner",
+    "description": "Автоматизированный аудит, сканирование и регистрация API-ключей провайдеров через Google SSO (Groq, OpenRouter, Gemini, HF).",
+    "file": "/opt/aios/tools/google_provider_provisioner.py",
+    "parameters": {
+      "action": "str (scan|run-all|sync-llmbalancer)"
+    },
+    "registered_at": "2026-09-02T15:15:00Z"
+  },
+  "memory_leak_detector": {
+    "name": "memory_leak_detector",
+    "description": "Анализирует потребление RSS-памяти системными сервисами octopus-* и выявляет аномальный рост.",
+    "file": "/opt/aios/tools/memory_leak_detector.py",
+    "parameters": {},
+    "registered_at": "2026-09-02T17:46:40Z"
+  }
+}

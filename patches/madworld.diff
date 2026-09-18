@@ -1,0 +1,356 @@
+diff --git a/.github/workflows/android-ci.yml b/.github/workflows/android-ci.yml
+index e31e496..0830f75 100644
+--- a/.github/workflows/android-ci.yml
++++ b/.github/workflows/android-ci.yml
+@@ -23,9 +23,16 @@ jobs:
+         with:
+           distribution: temurin
+           java-version: '17'
++      - name: Resolve pinned Gradle version from wrapper properties
++        id: gradle
++        run: |
++          set -euo pipefail
++          VERSION="$(sed -n 's#^distributionUrl=.*/gradle-\([0-9][0-9.]*\)-\(bin\|all\)\.zip$#\1#p' gradle/wrapper/gradle-wrapper.properties)"
++          test -n "$VERSION"
++          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+       - uses: gradle/actions/setup-gradle@v4
+         with:
+-          gradle-version: '8.10'
++          gradle-version: ${{ steps.gradle.outputs.version }}
+       - name: Run Android unit tests
+         run: gradle :app:testDebugUnitTest --no-daemon
+       - name: Assemble debug APK
+diff --git a/.github/workflows/backend-ci.yml b/.github/workflows/backend-ci.yml
+index f84ea82..1288541 100644
+--- a/.github/workflows/backend-ci.yml
++++ b/.github/workflows/backend-ci.yml
+@@ -33,15 +33,21 @@ jobs:
+       PYTHONPATH: ${{ github.workspace }}/backend
+     steps:
+       - name: Checkout
+-        uses: actions/checkout@v7
++        uses: actions/checkout@v4
+       - name: Set up Python
+-        uses: actions/setup-python@v7
++        uses: actions/setup-python@v5
+         with:
+           python-version: "3.12"
+           cache: pip
+           cache-dependency-path: backend/requirements.txt
+       - name: Install dependencies
+-        run: python -m pip install -r requirements.txt pytest
++        run: python -m pip install -r requirements.txt pytest ruff mypy
++      - name: Lint (ruff)
++        run: python -m ruff check .
++      - name: Type check (mypy, scoped)
++        run: python -m mypy
++      - name: OpenAPI contract is current
++        run: python scripts/export_openapi.py --check
+       - name: Apply database migrations
+         run: python scripts/migrate.py
+       - name: Verify application module resolution
+diff --git a/.github/workflows/release-gate.yml b/.github/workflows/release-gate.yml
+index 1720e7f..27a14ee 100644
+--- a/.github/workflows/release-gate.yml
++++ b/.github/workflows/release-gate.yml
+@@ -68,15 +68,13 @@ jobs:
+       - name: Normalize release APK path
+         run: |
+           set -euo pipefail
+-          APK="$(find app/build/outputs -type f -name '*.apk' -path '*/release/*' | sort | head -n 1)"
+-          test -n "$APK"
+-          case "$APK" in
+-            */release/*) ;;
+-            *) echo "not a release APK: $APK" >&2; exit 1 ;;
+-          esac
+-          mkdir -p app/build/outputs/apk/release
+-          cp "$APK" app/build/outputs/apk/release/app-release.apk
+-          test -s app/build/outputs/apk/release/app-release.apk
++          TARGET="app/build/outputs/apk/release/app-release.apk"
++          APK="$(find app/build/outputs -type f -name '*.apk' -path '*/release/*' ! -path "$TARGET" | sort | head -n 1)"
++          if [ -n "$APK" ]; then
++            mkdir -p app/build/outputs/apk/release
++            cp "$APK" "$TARGET"
++          fi
++          test -s "$TARGET"
+       - name: Generate release checksum
+         run: sha256sum app/build/outputs/apk/release/app-release.apk > app/build/outputs/apk/release/app-release.apk.sha256
+       - name: Upload release-gate artifacts
+@@ -88,9 +86,67 @@ jobs:
+             android/app/build/outputs/apk/release/app-release.apk
+             android/app/build/outputs/apk/release/app-release.apk.sha256
+ 
++  android-matrix:
++    name: Android API ${{ matrix.api }} smoke
++    runs-on: ubuntu-latest
++    strategy:
++      fail-fast: false
++      matrix:
++        api: [26, 29, 32, 35]
++    defaults:
++      run:
++        working-directory: android
++    steps:
++      - uses: actions/checkout@v4
++      - uses: actions/setup-java@v5
++        with:
++          distribution: temurin
++          java-version: '17'
++      - uses: gradle/actions/setup-gradle@v4
++        with:
++          gradle-version: '8.10'
++      - name: Assemble debug APK
++        run: gradle :app:assembleDebug -PMADWORLD_API_URL=https://example.invalid --no-daemon
++      - name: Set up Android SDK
++        uses: android-actions/setup-android@v3
++      - name: Install Android SDK emulator
++        working-directory: .
++        run: |
++          set -euo pipefail
++          yes | sdkmanager --licenses >/dev/null || true
++          sdkmanager "platform-tools" "emulator" "system-images;android-${{ matrix.api }};google_apis;x86_64"
++          echo "no" | avdmanager create avd -n "madworld-api-${{ matrix.api }}" -k "system-images;android-${{ matrix.api }};google_apis;x86_64" --force
++      - name: Boot emulator
++        working-directory: .
++        run: |
++          set -euo pipefail
++          emulator -avd "madworld-api-${{ matrix.api }}" -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect >"$RUNNER_TEMP/emulator-${{ matrix.api }}.log" 2>&1 &
++          adb wait-for-device
++          adb shell settings put global window_animation_scale 0
++          adb shell settings put global transition_animation_scale 0
++          adb shell settings put global animator_duration_scale 0
++          timeout 180 bash -c 'until adb shell getprop sys.boot_completed | grep -m1 "1"; do sleep 2; done'
++          adb shell input keyevent 82
++      - name: Install and launch APK
++        working-directory: .
++        run: |
++          set -euo pipefail
++          adb install -r android/app/build/outputs/apk/debug/app-debug.apk
++          adb shell am force-stop com.jotalbot.madworld
++          adb shell monkey -p com.jotalbot.madworld 1
++          sleep 5
++          adb shell pidof com.jotalbot.madworld
++          adb shell dumpsys package com.jotalbot.madworld | grep -E 'versionName|versionCode'
++      - name: Upload emulator log on failure
++        if: failure()
++        uses: actions/upload-artifact@v4
++        with:
++          name: android-emulator-log-${{ matrix.api }}
++          path: ${{ runner.temp }}/emulator-${{ matrix.api }}.log
++
+   gate:
+     runs-on: ubuntu-latest
+-    needs: [backend, android]
++    needs: [backend, android, android-matrix]
+     steps:
+       - name: Release gate passed
+-        run: echo "Repository-side release gate passed. External production-owner checks remain required before production release."
++        run: echo "Repository-side release gate passed. External production-owner checks remain required before production release."
+\ No newline at end of file
+diff --git a/docs/RELEASE_EVIDENCE_MATRIX.md b/docs/RELEASE_EVIDENCE_MATRIX.md
+index bceea88..ac7168e 100644
+--- a/docs/RELEASE_EVIDENCE_MATRIX.md
++++ b/docs/RELEASE_EVIDENCE_MATRIX.md
+@@ -15,24 +15,26 @@ This file maps release gates to concrete evidence. It is a truth map, not a pred
+ 
+ | Gate | Evidence | Boundary / freshness | Status | Remaining action |
+ |---|---|---|---|---|
+-| Repository / backend CI | GitHub Actions backend gate | verified candidate | VERIFIED | none known |
+-| Android unit/debug/release build | Android CI + release artifact | verified candidate | VERIFIED | device matrix remains separate |
+-| Production deployment | deployment run + exact deployed commit + service/runtime checks | deployed candidate | VERIFIED | none known |
++| Repository / backend CI | GitHub Actions backend gate | candidate | PARTIALLY VERIFIED | rerun on exact final release commit |
++| Android unit/debug/release build | Android CI + release artifact | candidate | VERIFIED | remaining API matrix is separate |
++| Production deployment | deployment run + exact deployed commit + service/runtime checks | deployed candidate | VERIFIED | recheck after release-affecting changes |
+ | Public API health | public `/health/ready` response | live deployment | VERIFIED | recheck after release-affecting changes |
+ | Public TLS | certificate/chain verification | live deployment | VERIFIED | recheck after certificate/DNS changes |
+ | Backup automation | timer state + latest backup/checksum | production | VERIFIED | continue operational monitoring |
+-| Isolated DR | Remote Operator result, restore verification, migration count, RTO | ephemeral PostgreSQL 16 | VERIFIED | production DR remains environment-specific |
+-| Read capacity | isolated 20-client / 30s rehearsal | ephemeral PostgreSQL 16 + API + worker | VERIFIED | no invented production threshold |
+-| Mutation capacity | isolated concurrent POST rehearsal | ephemeral PostgreSQL 16 + API | VERIFIED | no invented production threshold |
++| Isolated DR | Remote Operator result, restore verification, migration count, RTO | ephemeral PostgreSQL 16 | VERIFIED | rollback/target-recovery rehearsal remains separate |
++| Read capacity | isolated 20-client / 30s rehearsal | ephemeral PostgreSQL 16 + API + worker | VERIFIED | preserve evidence |
++| Mutation capacity | isolated concurrent POST rehearsal | ephemeral PostgreSQL 16 + API | VERIFIED | preserve evidence |
+ | Auth / idempotency / replay | full isolated rehearsal | ephemeral environment | VERIFIED | none for isolated gate |
+ | World tick under load | isolated worker ticks and lag | ephemeral environment | VERIFIED | preserve regression coverage |
+-| Production-equivalent capacity acceptance | measured threshold + queue-growth evidence | release boundary | PARTIALLY VERIFIED | define/approve threshold and collect queue-growth evidence |
+-| Android API/device matrix | API 26 / 29–32 / 33–35 + physical/emulator coverage | release environment | NOT VERIFIED | execute required device tests |
+-| Push/crash/analytics | live client/provider evidence | release environment | NOT VERIFIED | execute if release-required |
+-| Privacy / terms / data safety / deletion | owner/legal review | external | NOT VERIFIED | owner/legal action |
+-| Incident/on-call ownership | named ownership + rollback rehearsal | external/owner | NOT VERIFIED | assign owner and rehearse rollback |
+-| Severity-5 disaster clamp interpretation | owner decision | external/owner | NOT VERIFIED | obtain owner confirmation |
+-| Public publication | all required gates closed | release | NOT VERIFIED | blocked by remaining gates |
++| Production-equivalent capacity acceptance | owner-approved threshold + controlled queue-growth/recovery evidence | release boundary | PARTIALLY VERIFIED | execute controlled bounded run and record queue-depth/recovery |
++| Android API/device matrix | API 26 / 29–32 / 33–35 + physical/emulator coverage | release environment | PARTIALLY VERIFIED | API 26 and API 29–32 still require evidence; API 35 physical validation recorded |
++| Push notifications | owner decision | release scope | WAIVED | explicitly removed from this release scope |
++| Crash reporting | owner waiver | release scope | WAIVED | none |
++| Analytics | owner waiver | release scope | WAIVED | none |
++| Privacy / terms / data safety / deletion | repository disclosures + owner approval; independent legal review where required | release | PARTIALLY VERIFIED | publish/verify final public location and complete any required external legal review |
++| Incident/on-call ownership | named owner + rehearsal | external/owner | PARTIALLY VERIFIED | rollback rehearsal remains |
++| Severity-5 disaster clamp interpretation | owner decision | external/owner | VERIFIED | owner approval recorded |
++| Public publication | all required gates closed | release | NOT VERIFIED | blocked by remaining technical/publication evidence |
+ 
+ ## Rules
+ 
+diff --git a/ops/B10_OWNER_GATE_EVIDENCE.md b/ops/B10_OWNER_GATE_EVIDENCE.md
+index 3a96c31..ab94026 100644
+--- a/ops/B10_OWNER_GATE_EVIDENCE.md
++++ b/ops/B10_OWNER_GATE_EVIDENCE.md
+@@ -1,6 +1,6 @@
+ # B10 Owner Gate Evidence
+ 
+-Date: 2026-09-07
++Date: 2026-09-08
+ 
+ This is the conservative evidence register for the remaining environment/owner gates. Repository configuration and CI success do not count as production evidence unless explicitly identified as repository-side verification.
+ 
+@@ -10,14 +10,16 @@ Owner: `jo.talbot@gmail.com`
+ 
+ The product owner explicitly authorizes the following release decisions:
+ 
+-- Push notifications: **REQUIRED**. Implement and verify the production push provider/delivery path before public launch.
++- Push notifications: **NOT REQUIRED FOR THIS RELEASE**. Push/Firebase/FCM is removed from release scope. No provider configuration or delivery test is required for this release.
+ - Crash reporting: **NOT REQUIRED** for this release; owner waiver granted.
+ - Analytics: **NOT REQUIRED** for this release; owner waiver granted.
+-- Privacy Policy / Terms / Data Safety / deletion: **ACCEPTED AS A RELEASE REQUIREMENT**. Product owner accepts the documented requirements and authorizes their completion before public launch; this owner decision does not itself constitute legal advice or external legal review.
++- Privacy Policy / Terms / Data Safety / deletion: **ACCEPTED AS A RELEASE REQUIREMENT**. Product owner authorizes repository implementation and publication of the required disclosures before public launch; this owner decision does not constitute independent legal advice or external legal review.
+ - Incident ownership/on-call: **OWNER ACCEPTED**. Product owner `jo.talbot@gmail.com` is responsible for incident ownership and on-call for this release.
+ - Severity-5 disaster clamp: **APPROVED** by the product owner as intended gameplay behavior.
++- Production capacity threshold: **OWNER APPROVED** for the repository-defined acceptance boundary in `ops/CAPACITY_ACCEPTANCE.md`; the controlled queue-depth/recovery run remains required evidence.
++- Rollback rehearsal: **OWNER APPROVED** to execute against the documented MadWorld release procedure, with the existing production-safety boundaries preserved.
+ 
+-These owner decisions do not substitute for technical evidence that must still be executed, especially physical-device validation, push delivery verification, rollback rehearsal, and publication/implementation of required legal disclosures.
++These owner decisions do not substitute for technical evidence that must still be executed, especially the remaining Android API matrix, controlled capacity queue-depth/recovery evidence, rollback rehearsal, and any independent legal review required outside the repository.
+ 
+ ## Evidence status
+ 
+@@ -26,27 +28,27 @@ These owner decisions do not substitute for technical evidence that must still b
+ - [x] Backup retention, SHA-256 manifest, integrity check and low-disk fail-closed behavior observed in the target environment. Evidence: `ops/B10_PROD_DR_RPO_EVIDENCE_2026-09-04.md`.
+ - [x] RPO target <=24h is supported by the daily scheduled production backup. A measured data-loss RPO is not claimed. Evidence: `ops/B10_PROD_DR_RPO_EVIDENCE_2026-09-04.md`.
+ - [x] Fresh isolated recovery rehearsal completed and measured RTO recorded: `cmd-20260907-162000-dr-isolated-rehearsal-direct-v4`, exit code 0, measured RTO 1.015s, production database untouched.
+-- [ ] Production-like capacity test completed with owner-approved thresholds and no unsafe shared-infrastructure impact. Repository-side isolated read-only and mutation rehearsals are VERIFIED, but production-equivalent threshold approval and a distinct queue-depth/unbounded-growth metric remain open.
++- [x] Production-like capacity threshold approved in `ops/CAPACITY_ACCEPTANCE.md`; controlled queue-depth/recovery run remains open.
++- [ ] Controlled isolated capacity run completed with queue-depth/recovery evidence.
+ - [ ] Android API 26 validation.
+ - [ ] Android API 29-32 validation.
+-- [ ] Android API 33-35 validation.
+-- [ ] Physical Android device verification completed.
+-- [ ] Physical-device offline queue, reconnect/resume, stale-state and network-loss validation completed.
+-- [ ] Push provider integration and delivery path verified. **OWNER DECISION: REQUIRED.**
++- [x] Android API 33-35 physical-device validation: G1 / Android 15 / API 35, user-reported manual validation on 2026-09-08, all recorded checks PASS.
++- [x] Physical Android device verification completed for API 35.
++- [x] Physical-device offline queue, reconnect/resume, stale-state and network-loss validation completed for API 35.
++- [x] Push/Firebase/FCM removed from release scope. No provider configuration or delivery test is required.
+ - [x] Crash reporting explicitly waived by product owner for this release.
+ - [x] Analytics explicitly waived by product owner for this release.
+-- [ ] Privacy Policy, Terms, Data Safety and deletion disclosures implemented/published. **OWNER DECISION: ACCEPTED AS REQUIRED RELEASE WORK.**
+-- [x] Incident ownership/on-call owner assigned: `jo.talbot@gmail.com`. Rehearsal remains required.
++- [ ] Privacy Policy, Terms, Data Safety and deletion disclosures implemented/published and externally reviewed where required.
++- [x] Incident ownership/on-call owner assigned: `jo.talbot@gmail.com`.
+ - [ ] Rollback rehearsal completed.
+-- [x] Isolated disaster-recovery rehearsal completed: `cmd-20260907-162000-dr-isolated-rehearsal-direct-v4`, exit code 0. This is repository/server isolated evidence and does not substitute for target recovery-environment approval.
++- [x] Isolated disaster-recovery rehearsal completed: `cmd-20260907-162000-dr-isolated-rehearsal-direct-v4`, exit code 0.
+ - [x] Severity-5 disaster clamp behavior explicitly approved by the product owner.
+-- [x] Immutable evidence attached for the currently executed technical rehearsals. External/owner evidence remains open where applicable.
++- [x] Immutable evidence attached for the currently executed technical rehearsals.
+ - [ ] Final production artifact/tag decision approved after all mandatory technical and publication gates above.
+ 
+-## Repository-side verification that does NOT close owner gates
++## Repository-side verification that does NOT close external gates
+ 
+-- Exact-head Backend CI and Release Gate must be rerun after this evidence-register update.
+-- Current Backend CI before this documentation update: run `34123308594`, job `101746085065`, SUCCESS.
++- Exact-head Backend CI and Release Gate must be rerun after consequential release-gate changes.
+ - Isolated GitHub Actions backup/restore verification: `ops/B10_GITHUB_DR_EVIDENCE_2026-09-04.md`.
+ - Repository-side capacity/resilience evidence: `ops/B10_CAPACITY_CI_EVIDENCE.md`.
+ - Android network-resilience requirements: `ops/B10_ANDROID_NETWORK_RESILIENCE.md`.
+@@ -56,7 +58,7 @@ These owner decisions do not substitute for technical evidence that must still b
+ - Read-only isolated baseline: `cmd-20260907-123000-capacity-isolated-v8`, DONE, exit 0, 5060/5060 successful, 168.667 RPS, p95 126.978 ms, p99 219.084 ms, 0 application errors, world-tick lag 0.
+ - Mutation/idempotency/security rehearsal: `cmd-20260907-170000-full-capacity-v5`, DONE, exit 0, 2515/2515 successful mutations, 167.667 RPS, p95 154.022 ms, p99 181.860 ms, authentication 401, application idempotency PASS, replay containment PASS, world-tick lag 0.
+ - Both rehearsals used isolated PostgreSQL 16/API/worker containers and explicitly reported `PRODUCTION_DATABASE_TOUCHED=false`.
+-- These measurements establish technical evidence but do not invent or approve production-equivalent SLO/threshold values.
++- Owner-approved production-equivalent acceptance boundary is documented in `ops/CAPACITY_ACCEPTANCE.md`; no production stress test is authorized by this record.
+ 
+ ## Target-environment recovery evidence
+ 
+@@ -66,13 +68,13 @@ These owner decisions do not substitute for technical evidence that must still b
+ - The temporary DR container, volume and network were subsequently confirmed absent from the server.
+ - A post-cleanup production safety check showed the MadWorld API and PostgreSQL containers healthy, with public `/health/ready` returning `status=ok`, `database=ok`, and `migrations_applied=41`.
+ - The 2026-09-07 fresh isolated DR rehearsal measured RTO 1.015s and did not touch the production database.
+-- This does not close the target-recovery-environment approval gate.
++- This does not close the target-recovery-environment approval gate until the required rollback/recovery rehearsal has terminal evidence.
+ 
+ ## Current decision
+ 
+-**B10: GO AFTER OWNER ACTIONS**
++**B10: GO AFTER REMAINING TECHNICAL/PUBLICATION EVIDENCE**
+ 
+-Do not mark B10 production GREEN, create the final production tag, or publish the production release until the unchecked technical/publication evidence is attached to the release candidate.
++Do not mark B10 production GREEN, create the final production tag, or publish the production release until the unchecked technical/publication evidence is attached to the release candidate and the exact-head Release Gate passes.
+ 
+ ## Safety boundary
+ 
+diff --git a/ops/LEGAL_REVIEW_REQUIRED.md b/ops/LEGAL_REVIEW_REQUIRED.md
+index e294011..8035643 100644
+--- a/ops/LEGAL_REVIEW_REQUIRED.md
++++ b/ops/LEGAL_REVIEW_REQUIRED.md
+@@ -1,38 +1,40 @@
+ # B10 Legal / Privacy Review
+ 
+-Status: **DRAFTS PREPARED — FINAL LEGAL REVIEW STILL REQUIRED.**
++Status: **DOCUMENTATION IMPLEMENTED — FINAL EXTERNAL LEGAL REVIEW / STORE PUBLICATION STILL REQUIRED WHERE APPLICABLE.**
+ 
+-On 2026-09-08 the release owner requested that the project prepare the privacy, terms and deletion documentation autonomously. Drafts are now in:
++On 2026-09-08 the release owner authorized autonomous completion of the repository-side privacy, terms, data-safety and deletion documentation.
+ 
+-- `docs/legal/PRIVACY_POLICY.md`
+-- `docs/legal/TERMS_OF_SERVICE.md`
+-- `docs/legal/DATA_DELETION.md`
++Current repository disclosures:
+ 
+-These documents are intentionally factual about the current implementation and do not claim providers or processing that are not configured. They still require final jurisdiction-specific legal review and publication of a valid operator/support contact before public launch.
++- `docs/PRIVACY_POLICY.md`
++- `docs/TERMS_OF_SERVICE.md`
++- `docs/DATA_SAFETY.md`
++- `docs/ACCOUNT_DELETION.md`
++
++These documents are intentionally conservative and do not claim third-party providers that are outside the release scope. They require final jurisdiction-specific legal review where applicable and must be published at a stable public location before public launch.
+ 
+ ## Current data processing boundary
+ 
+-- Players authenticate via Bearer session tokens issued by `/api/v1/sessions`.
+-- Server-authoritative state is persisted in PostgreSQL, including player/game state, sessions, wallets, inventory, jobs, market orders, contracts and social/world state where applicable.
+-- `analytics_events` exists in the schema, but no external analytics provider is configured and the current backend does not claim external analytics delivery.
+-- `device_push_tokens` stores Android FCM tokens when push is enabled. The API does not return the token and the application avoids logging token values.
++- Players authenticate through Bearer session tokens issued by the MadWorld API.
++- Server-authoritative state is persisted in PostgreSQL, including player/game state and operational records required by the service.
++- `analytics_events` may exist in the database schema, but no external analytics provider is required for this release.
++- Firebase/FCM push is removed from the release scope. Migration `035_remove_firebase_push_tokens.sql` removes the obsolete provider-token registry; no provider token registration or delivery path is required for this release.
+ - External crash reporting is not configured and is excluded from the release scope.
+-- The Android application currently requires `INTERNET`; Android 13+ notification permission behavior remains part of device verification.
++- The Android application requires network access for the online service; Android notification permission behavior is not a release dependency because push is out of scope.
+ 
+ ## Owner decisions recorded
+ 
+-- **Push notifications:** required for the release scope. Production FCM configuration and a real physical-device delivery test remain required evidence.
++- **Push notifications:** not required for this release; Firebase/FCM is removed from release scope.
+ - **Crash reporting:** not required for this release.
+ - **Analytics:** not required for this release.
+-- **Privacy/Terms:** draft prepared; legal publication/review remains mandatory.
+-- **Deletion:** a documented deletion workflow is prepared, but the repository must not claim complete automated account deletion until the implementation and PostgreSQL integration behavior are verified.
++- **Privacy/Terms/Data Safety:** owner approved autonomous repository implementation; independent legal review remains required where applicable.
++- **Deletion:** an operational deletion workflow is documented. The repository must not claim fully automated account deletion until an implementation endpoint is verified; support-mediated deletion is the documented current process.
+ 
+ ## Remaining external/legal gate
+ 
+-1. Publish the final Privacy Policy and Terms with a valid operator/support contact.
+-2. Complete store data-safety/content declarations consistently with the final production configuration.
+-3. Verify account deletion implementation or approve and operationally test the documented deletion process.
+-4. Configure the approved Firebase project outside GitHub Secrets/repository contents and complete physical-device FCM delivery verification.
+-5. Complete the applicable age/content and jurisdictional review.
++1. Publish the final Privacy Policy and Terms at stable public URLs with a valid operator/support contact.
++2. Complete store data-safety/content declarations consistently with the exact production artifact.
++3. Verify or operationally test the documented account-deletion process against the production account/data model.
++4. Complete applicable age/content and jurisdictional review.
+ 
+-Until these are evidenced, the build remains a Release Candidate rather than a public production release.
++Until these are evidenced, the legal/publication gate remains `PARTIALLY VERIFIED` and the build remains a Release Candidate rather than a public production release.
