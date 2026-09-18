@@ -1,0 +1,10 @@
+{
+  "command_id": "cmd-20260905-160500-capacity-baseline-readonly-probe",
+  "attempt_id": "cmd-20260905-160500-capacity-baseline-readonly-probe-attempt-20260905T113706Z-3391691",
+  "status": "RUNNING",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-05T11:37:06Z",
+  "started_at": "2026-09-05T11:37:06Z",
+  "timeout_minutes": 5,
+  "pid": 3391738
+}

@@ -1,0 +1,11 @@
+{
+  "command_id": "cmd-20260905-160301-dr-prepare",
+  "attempt_id": "cmd-20260905-160301-dr-prepare-attempt-20260904T235201Z-1138863",
+  "status": "DONE",
+  "exit_code": 0,
+  "started_at": "2026-09-04T23:52:01Z",
+  "finished_at": "2026-09-04T23:52:01Z",
+  "duration_seconds": 0,
+  "executor": "arm-server-01",
+  "command": "set -euo pipefail\ncd /opt/madworld\nchmod 0755 ops/backup_restore.sh\nprintf 'BACKUP_RESTORE_MODE=%s\\n' \"$(stat -c '%a' ops/backup_restore.sh)\"\ntest -x ops/backup_restore.sh\nprintf '%s\\n' 'DR_PREPARED'\n"
+}

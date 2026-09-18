@@ -1,0 +1,11 @@
+{
+  "command_id": "cmd-20260904-220309-operator-test",
+  "attempt_id": "cmd-20260904-220309-operator-test-attempt-20260904T220310Z-796620",
+  "status": "DONE",
+  "exit_code": 0,
+  "started_at": "2026-09-04T22:03:10Z",
+  "finished_at": "2026-09-04T22:03:10Z",
+  "duration_seconds": 0,
+  "executor": "arm-server-01",
+  "command": "echo OPERATOR_TEST_START; echo HOST=arm-server-01; echo USER=ubuntu; echo OPERATOR_TEST_OK\n"
+}

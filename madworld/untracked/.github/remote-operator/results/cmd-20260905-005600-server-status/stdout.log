@@ -1,0 +1,17 @@
+SERVER_STATUS_START
+HOST=arm-server-01
+USER=ubuntu
+UID=1001
+PWD=/opt/madworld
+KERNEL=Linux 6.17.0-1018-oracle
+ARCH=aarch64
+UPTIME=up 3 days, 6 hours, 56 minutes
+LOAD=1.27 0.93 1.03
+DISK=30%,102G free
+MEMORY=10Gi/23Gi,12Gi available
+OPERATOR=active
+SYNC_TIMER=active
+FAILED_UNITS=0
+GIT_HEAD=b66e1ec3afa0d3796e9a5fd4eafb5107d5d9fac5
+GIT_MAIN=b66e1ec3afa0d3796e9a5fd4eafb5107d5d9fac5
+SERVER_STATUS_OK

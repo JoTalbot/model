@@ -1,0 +1,11 @@
+{
+  "command_id": "cmd-20260904-220900-operator-delivery-diagnostic",
+  "attempt_id": "cmd-20260904-220900-operator-delivery-diagnostic-attempt-20260904T222624Z-866812",
+  "status": "DONE",
+  "exit_code": 0,
+  "started_at": "2026-09-04T22:26:24Z",
+  "finished_at": "2026-09-04T22:26:25Z",
+  "duration_seconds": 1,
+  "executor": "arm-server-01",
+  "command": "set -u; echo DIAGNOSTIC_START; echo HOST=$(hostname); echo NOW=$(date -u +%FT%TZ); echo HEAD=$(git rev-parse HEAD 2>/dev/null || echo unknown); echo ORIGIN_MAIN=$(git rev-parse origin/main 2>/dev/null || echo unknown); echo QUEUE_HOME_TREE=$(grep -A8 'COMMAND_ID: cmd-20260904-220600-home-tree' .github/remote-operator/COMMANDS.txt 2>/dev/null || true); echo STATE_HOME_TREE_BEGIN; cat .github/remote-operator/state/cmd-20260904-220600-home-tree.json 2>/dev/null || echo STATE=ABSENT; echo STATE_HOME_TREE_END; echo RESULT_HOME_TREE_BEGIN; cat .github/remote-operator/results/cmd-20260904-220600-home-tree/result.md 2>/dev/null || echo RESULT=ABSENT; echo RESULT_HOME_TREE_END; echo OPERATOR_ACTIVE=$(systemctl is-active madworld-remote-operator.service 2>/dev/null || echo unknown); echo OPERATOR_ENABLED=$(systemctl is-enabled madworld-remote-operator.service 2>/dev/null || echo unknown); echo SYNC_TIMER_ACTIVE=$(systemctl is-active madworld-remote-operator-sync.timer 2>/dev/null || echo unknown); echo SYNC_TIMER_ENABLED=$(systemctl is-enabled madworld-remote-operator-sync.timer 2>/dev/null || echo unknown); echo SYNC_LAST=$(systemctl show -p ActiveState -p SubState -p Result -p ExecMainStatus madworld-remote-operator-sync.service 2>/dev/null | tr '\\n' ' '); echo SYNC_TIMER_NEXT=$(systemctl list-timers --all --no-legend madworld-remote-operator-sync.timer 2>/dev/null | head -1 || true); echo OPERATOR_MAINPID=$(systemctl show -p MainPID --value madworld-remote-operator.service 2>/dev/null || echo unknown); echo EXECUTOR_LOCK=$(flock -n 9 && echo FREE || echo BUSY) 9>.github/remote-operator/state/executor.lock; echo SYNC_LOCK=$(flock -n 9 && echo FREE || echo BUSY) 9>.github/remote-operator/state/result-sync.lock; echo RESULT_BRANCH=$(git ls-remote --heads origin remote-operator-results 2>/dev/null | awk '{print $1}' || true); echo FAILED_UNITS=$(systemctl --failed --no-legend 2>/dev/null | wc -l); echo DIAGNOSTIC_END\n"
+}

@@ -1,0 +1,16 @@
+SERVER_HEALTH_START
+HOST=arm-server-01
+USER=ubuntu
+UID=1001
+PWD=/opt/madworld
+KERNEL=Linux 6.17.0-1018-oracle
+ARCH=aarch64
+UPTIME=up 3 days, 6 hours, 54 minutes
+DISK=30%,102G free
+MEMORY=12Gi available
+OPERATOR=active
+OPERATOR_ENABLED=enabled
+SYNC_TIMER=active
+SYNC_ENABLED=enabled
+FAILED_UNITS=0
+SERVER_HEALTH_OK

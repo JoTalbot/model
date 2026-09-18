@@ -1,0 +1,2 @@
+awk: cmd. line:1: /Mem:/{print $3 "/" $2 " used, " $7 " available}
+awk: cmd. line:1:                                     ^ unterminated string

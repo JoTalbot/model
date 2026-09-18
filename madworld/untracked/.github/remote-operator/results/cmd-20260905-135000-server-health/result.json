@@ -1,0 +1,11 @@
+{
+  "command_id": "cmd-20260905-135000-server-health",
+  "attempt_id": "cmd-20260905-135000-server-health-attempt-20260904T215752Z-780061",
+  "status": "DONE",
+  "exit_code": 0,
+  "started_at": "2026-09-04T21:57:52Z",
+  "finished_at": "2026-09-04T21:57:52Z",
+  "duration_seconds": 0,
+  "executor": "arm-server-01",
+  "command": "set -e; echo SERVER_HEALTH_START; echo HOST=$(hostname); echo USER=$(id -un); echo UID=$(id -u); echo PWD=$(pwd); echo KERNEL=$(uname -sr); echo ARCH=$(uname -m); echo UPTIME=$(uptime -p); echo DISK=$(df -h /opt/madworld | awk 'NR==2{print $5 \",\" $4 \" free\"}'); echo MEMORY=$(free -h | awk '/Mem:/{print $7 \" available\"}'); echo OPERATOR=$(systemctl is-active madworld-remote-operator.service); echo OPERATOR_ENABLED=$(systemctl is-enabled madworld-remote-operator.service); echo SYNC_TIMER=$(systemctl is-active madworld-remote-operator-sync.timer); echo SYNC_ENABLED=$(systemctl is-enabled madworld-remote-operator-sync.timer); echo FAILED_UNITS=$(systemctl --failed --no-legend | wc -l); echo SERVER_HEALTH_OK\n"
+}

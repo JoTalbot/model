@@ -1,0 +1,14 @@
+{
+  "command_id": "cmd-20260905-160101-production-audit",
+  "attempt_id": "cmd-20260905-160101-production-audit-attempt-20260904T234850Z-1127120",
+  "status": "DONE",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-04T23:48:50Z",
+  "started_at": "2026-09-04T23:48:50Z",
+  "timeout_minutes": 10,
+  "pid": 1127151,
+  "finished_at": "2026-09-04T23:48:52Z",
+  "duration_seconds": 2,
+  "exit_code": 0,
+  "result_path": ".github/remote-operator/results/cmd-20260905-160101-production-audit/result.md"
+}

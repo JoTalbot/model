@@ -1,0 +1,10 @@
+{
+  "command_id": "cmd-20260905-045900-dr-isolated-rehearsal",
+  "attempt_id": "cmd-20260905-045900-dr-isolated-rehearsal-attempt-20260905T015922Z-1542975",
+  "status": "RUNNING",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-05T01:59:22Z",
+  "started_at": "2026-09-05T01:59:22Z",
+  "timeout_minutes": 15,
+  "pid": 1543008
+}

@@ -1,0 +1,11 @@
+---
+TYPE: WORKFLOW_DISPATCH
+COMMAND_ID: cmd-20260908-112500-5min-capacity-queue-recovery
+STATUS: PENDING
+AGENT: chatgpt-production-batch
+CREATED_AT: 2026-09-08T11:25:00+03:00
+WORKFLOW: remote-operator.yml
+REF: main
+TIMEOUT_MINUTES: 15
+INPUTS_JSON: {"operation":"command","mode":"sync","timeout_minutes":"15","workdir":"/opt/madworld","command":"set -euo pipefail; cd /opt/madworld; test -x ops/isolated_5min_capacity_rehearsal.sh; printf '%s\\n' CAPACITY_5MIN_START; date -u +%FT%TZ; bash ops/isolated_5min_capacity_rehearsal.sh; printf '%s\\n' CAPACITY_5MIN_DONE"}
+---

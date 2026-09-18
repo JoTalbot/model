@@ -1,0 +1,11 @@
+{
+  "command_id": "cmd-20260905-143000-nginx-cert-permission-diagnose",
+  "attempt_id": "cmd-20260905-143000-nginx-cert-permission-diagnose-attempt-20260904T225827Z-966502",
+  "status": "DONE",
+  "exit_code": 0,
+  "started_at": "2026-09-04T22:58:27Z",
+  "finished_at": "2026-09-04T22:58:28Z",
+  "duration_seconds": 1,
+  "executor": "arm-server-01",
+  "command": "set -u\nprintf '%s\\n' 'NGINX_CERT_PERMISSION_DIAGNOSE_START'\nprintf 'HOST=%s\\n' \"$(hostname)\"\nprintf '%s\\n' 'CERT_FILES='\nfind /etc/nginx/ssl -maxdepth 1 -type f -printf '%M %u:%g %p\\\\n' 2>/dev/null | sort || true\nprintf '%s\\n' 'NGINX_USER_CONFIG='\nawk '/^[[:space:]]*user[[:space:]]/{print}' /etc/nginx/nginx.conf 2>/dev/null || true\nprintf '%s\\n' 'CERT_PATHS='\ngrep -RInE 'ssl_certificate(_key)?[[:space:]]+' /etc/nginx 2>/dev/null | head -80 || true\nprintf '%s\\n' 'SERVICE_USER='\nps -eo user,group,pid,comm,args | grep '[n]ginx' | head -20 || true\nprintf '%s\\n' 'PARENT_DIR_PERMS='\nnamei -l /etc/nginx/ssl/api.autosklo.org.ua.origin.key 2>&1 || true\nprintf '%s\\n' 'NGINX_TEST='\nnginx -t 2>&1 || true\nprintf '%s\\n' 'NGINX_CERT_PERMISSION_DIAGNOSE_END'\n"
+}

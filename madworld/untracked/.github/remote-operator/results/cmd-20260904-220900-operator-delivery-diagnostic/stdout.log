@@ -1,0 +1,32 @@
+DIAGNOSTIC_START
+HOST=arm-server-01
+NOW=2026-09-04T22:26:24Z
+HEAD=b66e1ec3afa0d3796e9a5fd4eafb5107d5d9fac5
+ORIGIN_MAIN=10cb12fc6eb997aa052ae9b460d5ce8288b2176a
+QUEUE_HOME_TREE=COMMAND_ID: cmd-20260904-220600-home-tree STATUS: PENDING AGENT: chatgpt-home-tree TIMEOUT_MINUTES: 2 MODE: sync COMMAND: set -e; cd /home/ubuntu; echo HOME=/home/ubuntu; echo ===TREE===; if command -v tree >/dev/null 2>&1; then tree -a -L 3 -I '.cache|.local/share/Trash'; else find . -maxdepth 3 -print | sort; fi --- COMMAND_ID: cmd-20260904-220900-operator-delivery-diagnostic -- set -u; echo DIAGNOSTIC_START; echo HOST=$(hostname); echo NOW=$(date -u +%FT%TZ); echo HEAD=$(git rev-parse HEAD 2>/dev/null || echo unknown); echo ORIGIN_MAIN=$(git rev-parse origin/main 2>/dev/null || echo unknown); echo QUEUE_HOME_TREE=$(grep -A8 'COMMAND_ID: cmd-20260904-220600-home-tree' .github/remote-operator/COMMANDS.txt 2>/dev/null || true); echo STATE_HOME_TREE_BEGIN; cat .github/remote-operator/state/cmd-20260904-220600-home-tree.json 2>/dev/null || echo STATE=ABSENT; echo STATE_HOME_TREE_END; echo RESULT_HOME_TREE_BEGIN; cat .github/remote-operator/results/cmd-20260904-220600-home-tree/result.md 2>/dev/null || echo RESULT=ABSENT; echo RESULT_HOME_TREE_END; echo OPERATOR_ACTIVE=$(systemctl is-active madworld-remote-operator.service 2>/dev/null || echo unknown); echo OPERATOR_ENABLED=$(systemctl is-enabled madworld-remote-operator.service 2>/dev/null || echo unknown); echo SYNC_TIMER_ACTIVE=$(systemctl is-active madworld-remote-operator-sync.timer 2>/dev/null || echo unknown); echo SYNC_TIMER_ENABLED=$(systemctl is-enabled madworld-remote-operator-sync.timer 2>/dev/null || echo unknown); echo SYNC_LAST=$(systemctl show -p ActiveState -p SubState -p Result -p ExecMainStatus madworld-remote-operator-sync.service 2>/dev/null | tr '\n' ' '); echo SYNC_TIMER_NEXT=$(systemctl list-timers --all --no-legend madworld-remote-operator-sync.timer 2>/dev/null | head -1 || true); echo OPERATOR_MAINPID=$(systemctl show -p MainPID --value madworld-remote-operator.service 2>/dev/null || echo unknown); echo EXECUTOR_LOCK=$(flock -n 9 && echo FREE || echo BUSY) 9>.github/remote-operator/state/executor.lock; echo SYNC_LOCK=$(flock -n 9 && echo FREE || echo BUSY) 9>.github/remote-operator/state/result-sync.lock; echo RESULT_BRANCH=$(git ls-remote --heads origin remote-operator-results 2>/dev/null | awk '{print $1}' || true); echo FAILED_UNITS=$(systemctl --failed --no-legend 2>/dev/null | wc -l); echo DIAGNOSTIC_END ---
+STATE_HOME_TREE_BEGIN
+{
+  "command_id": "cmd-20260904-220600-home-tree",
+  "attempt_id": "cmd-20260904-220600-home-tree-attempt-20260904T222624Z-866806",
+  "status": "RUNNING",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-04T22:26:24Z",
+  "started_at": "2026-09-04T22:26:24Z",
+  "timeout_minutes": 2
+}
+STATE_HOME_TREE_END
+RESULT_HOME_TREE_BEGIN
+RESULT=ABSENT
+RESULT_HOME_TREE_END
+OPERATOR_ACTIVE=active
+OPERATOR_ENABLED=enabled
+SYNC_TIMER_ACTIVE=active
+SYNC_TIMER_ENABLED=enabled
+SYNC_LAST=Result=success ExecMainStatus=0 ActiveState=inactive SubState=dead
+SYNC_TIMER_NEXT=Fri 2026-09-04 22:26:37 UTC 12s Fri 2026-09-04 22:26:07 UTC 17s ago madworld-remote-operator-sync.timer madworld-remote-operator-sync.service
+OPERATOR_MAINPID=786016
+EXECUTOR_LOCK=FREE
+SYNC_LOCK=FREE
+RESULT_BRANCH=1eff80fc9f7444d74cfb881d3c805c46a71f92d3
+FAILED_UNITS=0
+DIAGNOSTIC_END

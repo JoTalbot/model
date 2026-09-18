@@ -1,0 +1,24 @@
+CAPACITY_BASELINE_START
+HOST=arm-server-01 NOW=2026-09-05T11:37:06Z
+BEFORE_LOAD=
+ 11:37:06 up 3 days, 20:33,  5 users,  load average: 1.43, 1.70, 2.09
+               total        used        free      shared  buff/cache   available
+Mem:           23974       14808        3713         154        5928        9166
+SEQUENTIAL_20=
+      1 301 0.001005
+      1 301 0.000713
+      1 301 0.000707
+      1 301 0.000670
+      1 301 0.000531
+CONCURRENT_5x4=
+code=301 count=20
+avg=0.0011 max=0.0054 n=20
+AFTER_LOAD=
+ 11:37:06 up 3 days, 20:33,  4 users,  load average: 1.43, 1.70, 2.09
+               total        used        free      shared  buff/cache   available
+Mem:           23974       14796        3703         154        5950        9177
+PG_CONNECTIONS=
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  database "madworld" does not exist
+API_LOG_ERRORS_LAST_5M=
+0
+CAPACITY_BASELINE_END

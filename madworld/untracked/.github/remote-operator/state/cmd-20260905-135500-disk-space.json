@@ -1,0 +1,14 @@
+{
+  "command_id": "cmd-20260905-135500-disk-space",
+  "attempt_id": "cmd-20260905-135500-disk-space-attempt-20260904T223007Z-879086",
+  "status": "DONE",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-04T22:30:07Z",
+  "started_at": "2026-09-04T22:30:07Z",
+  "timeout_minutes": 2,
+  "pid": 879118,
+  "finished_at": "2026-09-04T22:30:07Z",
+  "duration_seconds": 0,
+  "exit_code": 0,
+  "result_path": ".github/remote-operator/results/cmd-20260905-135500-disk-space/result.md"
+}

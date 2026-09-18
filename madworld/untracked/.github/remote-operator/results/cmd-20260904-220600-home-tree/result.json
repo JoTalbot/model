@@ -1,0 +1,11 @@
+{
+  "command_id": "cmd-20260904-220600-home-tree",
+  "attempt_id": "cmd-20260904-220600-home-tree-attempt-20260904T222624Z-866806",
+  "status": "DONE",
+  "exit_code": 0,
+  "started_at": "2026-09-04T22:26:24Z",
+  "finished_at": "2026-09-04T22:26:25Z",
+  "duration_seconds": 1,
+  "executor": "arm-server-01",
+  "command": "set -e; cd /home/ubuntu; echo HOME=/home/ubuntu; echo ===TREE===; if command -v tree >/dev/null 2>&1; then tree -a -L 3 -I '.cache|.local/share/Trash'; else find . -maxdepth 3 -print | sort; fi\n"
+}

@@ -1,0 +1,14 @@
+{
+  "command_id": "cmd-20260905-143000-nginx-cert-permission-diagnose",
+  "attempt_id": "cmd-20260905-143000-nginx-cert-permission-diagnose-attempt-20260904T225827Z-966502",
+  "status": "DONE",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-04T22:58:27Z",
+  "started_at": "2026-09-04T22:58:27Z",
+  "timeout_minutes": 3,
+  "pid": 966527,
+  "finished_at": "2026-09-04T22:58:28Z",
+  "duration_seconds": 1,
+  "exit_code": 0,
+  "result_path": ".github/remote-operator/results/cmd-20260905-143000-nginx-cert-permission-diagnose/result.md"
+}

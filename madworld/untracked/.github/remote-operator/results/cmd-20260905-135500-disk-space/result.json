@@ -1,0 +1,11 @@
+{
+  "command_id": "cmd-20260905-135500-disk-space",
+  "attempt_id": "cmd-20260905-135500-disk-space-attempt-20260904T223007Z-879086",
+  "status": "DONE",
+  "exit_code": 0,
+  "started_at": "2026-09-04T22:30:07Z",
+  "finished_at": "2026-09-04T22:30:07Z",
+  "duration_seconds": 0,
+  "executor": "arm-server-01",
+  "command": "set -e; echo DISK_SPACE_START; echo ROOT=$(df -h / | awk 'NR==2{print $4 \" free (\" $5 \" used)\"}'); echo MADWORLD=$(df -h /opt/madworld | awk 'NR==2{print $4 \" free (\" $5 \" used)\"}'); echo HOME=$(df -h /home/ubuntu | awk 'NR==2{print $4 \" free (\" $5 \" used)\"}'); echo DISK_SPACE_OK\n"
+}

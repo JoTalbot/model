@@ -1,0 +1,14 @@
+{
+  "command_id": "cmd-20260905-160301-dr-prepare",
+  "attempt_id": "cmd-20260905-160301-dr-prepare-attempt-20260904T235201Z-1138863",
+  "status": "DONE",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-04T23:52:01Z",
+  "started_at": "2026-09-04T23:52:01Z",
+  "timeout_minutes": 3,
+  "pid": 1138961,
+  "finished_at": "2026-09-04T23:52:01Z",
+  "duration_seconds": 0,
+  "exit_code": 0,
+  "result_path": ".github/remote-operator/results/cmd-20260905-160301-dr-prepare/result.md"
+}

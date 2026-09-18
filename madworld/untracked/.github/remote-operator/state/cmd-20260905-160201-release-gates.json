@@ -1,0 +1,14 @@
+{
+  "command_id": "cmd-20260905-160201-release-gates",
+  "attempt_id": "cmd-20260905-160201-release-gates-attempt-20260904T235024Z-1133576",
+  "status": "DONE",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-04T23:50:24Z",
+  "started_at": "2026-09-04T23:50:24Z",
+  "timeout_minutes": 10,
+  "pid": 1133603,
+  "finished_at": "2026-09-04T23:50:25Z",
+  "duration_seconds": 1,
+  "exit_code": 0,
+  "result_path": ".github/remote-operator/results/cmd-20260905-160201-release-gates/result.md"
+}

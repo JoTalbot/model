@@ -1,0 +1,11 @@
+{
+  "command_id": "cmd-20260905-141500-production-proxy-check",
+  "attempt_id": "cmd-20260905-141500-production-proxy-check-attempt-20260904T225620Z-960129",
+  "status": "DONE",
+  "exit_code": 0,
+  "started_at": "2026-09-04T22:56:20Z",
+  "finished_at": "2026-09-04T22:56:21Z",
+  "duration_seconds": 1,
+  "executor": "arm-server-01",
+  "command": "set -u\nprintf '%s\\n' 'PRODUCTION_PROXY_CHECK_START'\nprintf 'HOST=%s\\n' \"$(hostname)\"\nprintf 'NOW=%s\\n' \"$(date -u +%FT%TZ)\"\nprintf 'REPO_HEAD=%s\\n' \"$(git -C /opt/madworld rev-parse HEAD 2>/dev/null || echo unknown)\"\nprintf 'ORIGIN_MAIN=%s\\n' \"$(git -C /opt/madworld rev-parse origin/main 2>/dev/null || echo unknown)\"\nprintf 'REPO_REMOTE=%s\\n' \"$(git -C /opt/madworld remote get-url origin 2>/dev/null || echo unknown)\"\nprintf 'BRANCH=%s\\n' \"$(git -C /opt/madworld branch --show-current 2>/dev/null || echo unknown)\"\nprintf '%s\\n' 'RECENT_COMMITS='\ngit -C /opt/madworld log -8 --oneline --decorate 2>/dev/null || true\nprintf '%s\\n' 'GIT_STATUS='\ngit -C /opt/madworld status --short --branch 2>/dev/null || true\nprintf '%s\\n' 'NGINX_CONFIG_TEST='\nnginx -t 2>&1 || true\nprintf '%s\\n' 'NGINX_SERVER_NAMES='\nnginx -T 2>/dev/null | awk '/server_name[[:space:]]/{print}' | head -80 || true\nprintf '%s\\n' 'NGINX_LISTEN='\nnginx -T 2>/dev/null | awk '/listen[[:space:]]/{print}' | head -80 || true\nprintf '%s\\n' 'HTTP_HEADERS='\ncurl -sS -D - -o /dev/null --max-time 10 http://127.0.0.1/health 2>&1 || true\nprintf '%s\\n' 'HTTPS_HEADERS='\ncurl -k -sS -D - -o /dev/null --max-time 10 https://127.0.0.1/health 2>&1 || true\nprintf '%s\\n' 'LOCAL_HTTP_HEALTH='\ncurl -sS -L -D - --max-time 10 http://127.0.0.1/health 2>&1 || true\nprintf '%s\\n' 'LOCAL_HTTP_READY='\ncurl -sS -L -D - --max-time 10 http://127.0.0.1/health/ready 2>&1 || true\nprintf '%s\\n' 'DOCKER_PS='\ndocker compose -f /opt/madworld/docker-compose.yml ps 2>&1 || docker ps --format '{{.Names}} {{.Status}}'\nprintf '%s\\n' 'API_PORTS='\nss -lntp 2>/dev/null | grep -E ':(80|443|8000|8090|5432|5433)\\\\b' || true\nprintf '%s\\n' 'PRODUCTION_PROXY_CHECK_END'\n"
+}

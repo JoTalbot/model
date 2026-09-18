@@ -1,0 +1,11 @@
+{
+  "command_id": "cmd-20260905-140000-server-status-tree",
+  "attempt_id": "cmd-20260905-140000-server-status-tree-attempt-20260904T223717Z-900969",
+  "status": "DONE",
+  "exit_code": 0,
+  "started_at": "2026-09-04T22:37:17Z",
+  "finished_at": "2026-09-04T22:37:18Z",
+  "duration_seconds": 1,
+  "executor": "arm-server-01",
+  "command": "set -euo pipefail\nprintf '%s\\n' 'SERVER_STATUS_TREE_START'\nprintf 'HOST=%s\\n' \"$(hostname)\"\nprintf 'USER=%s\\n' \"$(id -un)\"\nprintf 'ARCH=%s\\n' \"$(uname -m)\"\nprintf 'KERNEL=%s\\n' \"$(uname -sr)\"\nprintf 'UPTIME=%s\\n' \"$(uptime -p)\"\nprintf 'LOAD=%s\\n' \"$(cut -d' ' -f1-3 /proc/loadavg)\"\nprintf 'MEMORY=%s\\n' \"$(free -h | awk '/Mem:/{print $3 \"/\" $2 \" used, \" $7 \" available\"}')\"\nprintf 'DISK_ROOT=%s\\n' \"$(df -h / | awk 'NR==2{print $3 \"/\" $2 \" used, \" $4 \" free (\" $5 \")\"}')\"\nprintf 'DISK_MADWORLD=%s\\n' \"$(df -h /opt/madworld | awk 'NR==2{print $3 \"/\" $2 \" used, \" $4 \" free (\" $5 \")\"}')\"\nprintf 'OPERATOR=%s\\n' \"$(systemctl is-active madworld-remote-operator.service)\"\nprintf 'OPERATOR_ENABLED=%s\\n' \"$(systemctl is-enabled madworld-remote-operator.service)\"\nprintf 'SYNC_TIMER=%s\\n' \"$(systemctl is-active madworld-remote-operator-sync.timer)\"\nprintf 'SYNC_TIMER_ENABLED=%s\\n' \"$(systemctl is-enabled madworld-remote-operator-sync.timer)\"\nprintf 'FAILED_UNITS=%s\\n' \"$(systemctl --failed --no-legend | wc -l)\"\nprintf '%s\\n' '===FILESYSTEM_TOP=== '\nfind / -mindepth 1 -maxdepth 1 -xdev -printf '%p\\n' 2>/dev/null | sort\nprintf '%s\\n' '===MADWORLD_TREE=== '\nif command -v tree >/dev/null 2>&1; then tree -a -L 3 -I '.git|state|results' /opt/madworld 2>/dev/null; else find /opt/madworld -maxdepth 3 -print | sort; fi\nprintf '%s\\n' '===HOME_TREE=== '\nif command -v tree >/dev/null 2>&1; then tree -a -L 2 -I '.cache|.local/share/Trash|.gradle|.android|.hermes/hermes-venv' /home/ubuntu 2>/dev/null; else find /home/ubuntu -maxdepth 2 -print | sort; fi\nprintf '%s\\n' 'SERVER_STATUS_TREE_OK'\n"
+}

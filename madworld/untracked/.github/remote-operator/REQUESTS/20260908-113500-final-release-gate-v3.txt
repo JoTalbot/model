@@ -1,0 +1,11 @@
+---
+TYPE: WORKFLOW_DISPATCH
+COMMAND_ID: cmd-20260908-113500-final-release-gate-v3
+STATUS: PENDING
+AGENT: chatgpt-production-batch
+CREATED_AT: 2026-09-08T11:35:00+03:00
+WORKFLOW: release-gate.yml
+REF: main
+TIMEOUT_MINUTES: 30
+INPUTS_JSON: {}
+---

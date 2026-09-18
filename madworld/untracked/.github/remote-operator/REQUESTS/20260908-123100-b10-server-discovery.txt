@@ -1,0 +1,12 @@
+---
+COMMAND_ID: cmd-20260908-123100-b10-server-discovery
+STATUS: PENDING
+AGENT: autonomy-b10-release-batch
+CREATED_AT: 2026-09-08T12:31:00+03:00
+TIMEOUT_MINUTES: 10
+MODE: workflow_dispatch
+TYPE: WORKFLOW_DISPATCH
+WORKFLOW: remote-operator.yml
+REF: main
+INPUTS_JSON: {"operation":"command","command":"set -euo pipefail\nprintf 'USER='; id -un\nprintf 'EUID='; id -u\nprintf 'DEPLOYED_SHA='; cat /opt/madworld/.github-deployed-sha 2>/dev/null || true\nprintf 'HEALTH_READY='; curl -kfsS --max-time 10 https://127.0.0.1/health/ready || true\nprintf '\\nSCRIPTS\\n'; find /opt/madworld -maxdepth 3 -type f \\( -iname '*capacity*' -o -iname '*rollback*' -o -iname '*release*' -o -iname '*android*' \\) -print | sort | head -200","mode":"sync","timeout_minutes":"10","workdir":"/opt/madworld","cleanup":true}
+---

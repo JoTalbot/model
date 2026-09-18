@@ -1,0 +1,10 @@
+TYPE: WORKFLOW_DISPATCH
+COMMAND_ID: cmd-20260908-153700-server-runtime-followup
+STATUS: PENDING
+AGENT: chatgpt-current-runtime-followup
+CREATED_AT: 2026-09-08T15:37:00Z
+TIMEOUT_MINUTES: 5
+WORKFLOW: remote-operator-dispatch.yml
+REF: main
+INPUTS_JSON: {"command":"set -euo pipefail; printf '%s\\n' SERVER_RUNTIME_FOLLOWUP_START; printf 'HOST=%s\\n' \"$(hostname)\"; printf 'NOW=%s\\n' \"$(date -u +%FT%TZ)\"; printf 'USER=%s\\n' \"$(id -un)\"; printf 'UID=%s\\n' \"$(id -u)\"; printf 'GIT_DIR=%s\\n' \"$(git -C /opt/madworld rev-parse --git-dir 2>/dev/null || echo absent)\"; printf 'GIT_HEAD=%s\\n' \"$(git -C /opt/madworld rev-parse HEAD 2>/dev/null || echo unknown)\"; printf 'GIT_MAIN=%s\\n' \"$(git -C /opt/madworld rev-parse origin/main 2>/dev/null || echo unknown)\"; printf 'GIT_STATUS=%s\\n' \"$(git -C /opt/madworld status --short --branch 2>/dev/null || echo unknown)\"; printf 'HEALTH_HEADERS=\\n'; curl -sS -D - -o /tmp/mw-health-body --max-time 10 http://127.0.0.1/health 2>&1 || true; printf 'HEALTH_BODY='; cat /tmp/mw-health-body 2>/dev/null || true; printf '\\n'; printf 'HEALTH_FOLLOW='; curl -fsSL --max-time 10 http://127.0.0.1/health; printf '\\n'; printf 'READINESS_FOLLOW='; curl -fsSL --max-time 10 http://127.0.0.1/health/ready; printf '\\n'; printf 'OPERATOR=%s\\n' \"$(systemctl is-active madworld-remote-operator.service)\"; printf 'OPERATOR_ENABLED=%s\\n' \"$(systemctl is-enabled madworld-remote-operator.service)\"; printf 'SYNC_TIMER=%s\\n' \"$(systemctl is-active madworld-remote-operator-sync.timer)\"; printf 'SYNC_TIMER_ENABLED=%s\\n' \"$(systemctl is-enabled madworld-remote-operator-sync.timer)\"; printf 'FAILED_UNITS_COUNT=%s\\n' \"$(systemctl --failed --no-legend | wc -l)\"; printf 'FAILED_UNITS=\\n'; systemctl --failed --no-legend || true; printf 'DISK_MADWORLD=%s\\n' \"$(df -h /opt/madworld | awk 'NR==2{print $3 \"/\" $2 \",\" $4 \" free (\" $5 \")\"}')\"; printf 'MEMORY=%s\\n' \"$(free -h | awk '/Mem:/{print $3 \"/\" $2 \" used, \" $7 \" available\"}')\"; printf 'LOAD=%s\\n' \"$(cut -d' ' -f1-3 /proc/loadavg)\"; printf '%s\\n' SERVER_RUNTIME_FOLLOWUP_OK","workdir":"/opt/madworld","timeout_minutes":"5"}
+---

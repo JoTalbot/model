@@ -1,0 +1,12 @@
+---
+COMMAND_ID: cmd-20260907-140500-workflow-dispatch-smoke
+STATUS: PENDING
+AGENT: remote-operator-workflow-dispatch
+CREATED_AT: 2026-09-07T11:30:00Z
+TIMEOUT_MINUTES: 5
+MODE: workflow_dispatch
+TYPE: WORKFLOW_DISPATCH
+WORKFLOW: remote-operator-dispatch-smoke.yml
+REF: main
+INPUTS_JSON: {"marker":"remote-operator-dispatch-smoke"}
+---

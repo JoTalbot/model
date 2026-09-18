@@ -1,0 +1,14 @@
+{
+  "command_id": "cmd-20260905-141500-production-proxy-check",
+  "attempt_id": "cmd-20260905-141500-production-proxy-check-attempt-20260904T225620Z-960129",
+  "status": "DONE",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-04T22:56:20Z",
+  "started_at": "2026-09-04T22:56:20Z",
+  "timeout_minutes": 5,
+  "pid": 960160,
+  "finished_at": "2026-09-04T22:56:21Z",
+  "duration_seconds": 1,
+  "exit_code": 0,
+  "result_path": ".github/remote-operator/results/cmd-20260905-141500-production-proxy-check/result.md"
+}

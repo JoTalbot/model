@@ -1,0 +1,14 @@
+{
+  "command_id": "cmd-20260905-140000-server-status-tree",
+  "attempt_id": "cmd-20260905-140000-server-status-tree-attempt-20260904T223717Z-900969",
+  "status": "DONE",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-04T22:37:17Z",
+  "started_at": "2026-09-04T22:37:17Z",
+  "timeout_minutes": 3,
+  "pid": 900994,
+  "finished_at": "2026-09-04T22:37:18Z",
+  "duration_seconds": 1,
+  "exit_code": 0,
+  "result_path": ".github/remote-operator/results/cmd-20260905-140000-server-status-tree/result.md"
+}

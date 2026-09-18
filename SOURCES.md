@@ -26,6 +26,25 @@
 4. Скрипт `tools/fetch-from-host.sh` (путь в `README.md` → `export.sh`) пересоздаёт
    снимок с хоста при наличии SSH-доступа.
 
+## Второй снимок (2026-09-18, дополнение — полный охват правок)
+
+| Файл(-ы) в репо | Источник на хосте | Статус |
+|---|---|---|
+| `madworld/modified/**` | `/opt/madworld` — полные копии 6 tracked-изменённых файлов | tracked mod |
+| `madworld/untracked/**` | `/opt/madworld` — 107 untracked (без `.dump` бэкапов БД) | untracked |
+| `madworld/tracked.diff` | `git diff` в `/opt/madworld` (26 KiB) | — |
+| `hermes/modified/**` | `/opt/hermes` — `config/models/hermes-models.yaml`, `deploy/shim/aios_openai_shim.py` | tracked mod |
+| `hermes/tracked.diff` | `git diff` в `/opt/hermes` (1.6 KiB, tier `hermes-arena`) | — |
+| `hermes/untracked/*.bak-*` | `/opt/hermes` бэкапы shim/models | untracked |
+| `octopus/untracked/*.py` | `/opt/octopus` — auth-watchdog, provider-provisioner | untracked |
+| `octopus/status.txt`, `diff-stat.txt` | `git status`/`diff --stat` в `/opt/octopus` (ветка `arena/audit-…`) | — |
+| `octopus-browser/**` | `/opt/octopus-browser` — 4 untracked (browser-image, cookie-keeper) | untracked |
+| `aios` новые файлы | `/opt/aios` — tools (6 новых), evolution_history.json, balancer `.bak` | untracked |
+| `inventory/repos-full.md` | Инвентарь всех 19 git-репозиториев хоста | снимок |
+
+Редакции второго снимка: публичный IP в `octopus-provider-provisioner.py` (novnc_url)
+→ `<PUBLIC_IP_REDACTED>`; `.pyc`/`__pycache__` и DB-дампы исключены.
+
 ## Проверки перед пушем
 
 - Скан секретов (regex): чисто.

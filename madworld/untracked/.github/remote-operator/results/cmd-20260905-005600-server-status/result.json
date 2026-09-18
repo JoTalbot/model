@@ -1,0 +1,11 @@
+{
+  "command_id": "cmd-20260905-005600-server-status",
+  "attempt_id": "cmd-20260905-005600-server-status-attempt-20260904T215956Z-786035",
+  "status": "DONE",
+  "exit_code": 0,
+  "started_at": "2026-09-04T21:59:56Z",
+  "finished_at": "2026-09-04T21:59:56Z",
+  "duration_seconds": 0,
+  "executor": "arm-server-01",
+  "command": "set -e; echo SERVER_STATUS_START; echo HOST=$(hostname); echo USER=$(id -un); echo UID=$(id -u); echo PWD=$(pwd); echo KERNEL=$(uname -sr); echo ARCH=$(uname -m); echo UPTIME=$(uptime -p); echo LOAD=$(cut -d' ' -f1-3 /proc/loadavg); echo DISK=$(df -h /opt/madworld | awk 'NR==2{print $5 \",\" $4 \" free\"}'); echo MEMORY=$(free -h | awk '/Mem:/{print $3 \"/\" $2 \",\" $7 \" available\"}'); echo OPERATOR=$(systemctl is-active madworld-remote-operator.service); echo SYNC_TIMER=$(systemctl is-active madworld-remote-operator-sync.timer); echo FAILED_UNITS=$(systemctl --failed --no-legend | wc -l); echo GIT_HEAD=$(git rev-parse HEAD); echo GIT_MAIN=$(git rev-parse origin/main 2>/dev/null || echo unknown); echo SERVER_STATUS_OK\n"
+}

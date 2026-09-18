@@ -1,0 +1,11 @@
+{
+  "command_id": "cmd-20260905-140500-server-runtime-final",
+  "attempt_id": "cmd-20260905-140500-server-runtime-final-attempt-20260904T225358Z-951668",
+  "status": "DONE",
+  "exit_code": 0,
+  "started_at": "2026-09-04T22:53:58Z",
+  "finished_at": "2026-09-04T22:53:59Z",
+  "duration_seconds": 1,
+  "executor": "arm-server-01",
+  "command": "set -euo pipefail\nprintf '%s\\n' 'RUNTIME_FINAL_START'\nprintf 'HOST=%s\\n' \"$(hostname)\"\nprintf 'NOW=%s\\n' \"$(date -u +%FT%TZ)\"\nprintf 'GIT_HEAD=%s\\n' \"$(git -C /opt/madworld rev-parse HEAD 2>/dev/null || echo unknown)\"\nprintf 'GIT_MAIN=%s\\n' \"$(git -C /opt/madworld rev-parse origin/main 2>/dev/null || echo unknown)\"\nprintf 'GIT_STATUS=%s\\n' \"$(git -C /opt/madworld status --short --branch 2>/dev/null || echo unknown)\"\nprintf 'HEALTH='; curl -fsS --max-time 10 http://127.0.0.1/health 2>&1 || true; printf '\\n'\nprintf 'READINESS='; curl -fsS --max-time 10 http://127.0.0.1/health/ready 2>&1 || true; printf '\\n'\nprintf '%s\\n' 'CONTAINERS='\ndocker compose -f /opt/madworld/docker-compose.yml ps 2>&1 || docker ps --format '{{.Names}} {{.Status}}'\nprintf '%s\\n' 'FAILED_UNITS='; systemctl --failed --no-legend 2>&1 || true\nprintf '%s\\n' 'OPERATOR='; systemctl is-active madworld-remote-operator.service 2>&1 || true\nprintf '%s\\n' 'SYNC_TIMER='; systemctl is-active madworld-remote-operator-sync.timer 2>&1 || true\nprintf '%s\\n' 'RUNTIME_FINAL_END'\n"
+}

@@ -16,7 +16,18 @@ Snapshot-репозиторий: модельные конфиги, LLM-инфр
 | `code/model-watch/` | Монитор флага `agent-model-selector` арены + systemd unit/timer |
 | `code/orchestrator-scripts/` | Незакоммиченные скрипты разведки/тестов API (chatgpt-оркестрация), включая `.bak` драйвера Jo |
 | `patches/` | Незапушенные git-правки проектов на хосте (tracked diff): `madworld.diff`, `orchestrator.diff` |
-| `inventory/repos.md` | Инвентарь репозиториев на хосте: ветка, HEAD, modified/untracked на момент снимка |
+| `inventory/repos.md` | Инвентарь репозиториев на хосте на момент первого снимка |
+| `inventory/repos-full.md` | **Полный** инвентарь всех 19 git-репозиториев хоста: ветка, HEAD, remote, modified/untracked/unpushed |
+| `madworld/` | Полные незакоммиченные правки MadWorld: `modified/` (полные копии 6 tracked-файлов), `untracked/` (107 файлов: remote-operator результаты/состояние, 2 новых CI-workflow, юридические доки, Firebase/FCM-код), `tracked.diff` |
+| `hermes/` | Правки Hermes: `modified/` (models.yaml + shim — новый tier `hermes-arena`), `untracked/` (`*.bak`), `tracked.diff` |
+| `octopus/` | Правки octopus: 2 новых untracked-скрипта (auth-watchdog, provider-provisioner — IP замаскирован), `status.txt`/`diff-stat.txt` |
+| `octopus-browser/` | 4 untracked-файла: browser-image (Dockerfile+start.sh+start-profile9.sh) и cookie-keeper |
+
+> Полный охват незапушенных правок хоста (снимок 2026-09-18): грязными оказались 6 из 19
+> репозиториев — aios (181 untracked, из них 158 `.pyc` — байткод исключён), madworld (6 mod
+> + 107 untracked), hermes (2 mod + 2 untracked), octopus (1 del + 2 untracked),
+> octopus-browser (4 untracked), orchestrator (1 mod + 20 untracked — уже в
+> `code/orchestrator-scripts/`). Остальные 13 репозиториев чисты.
 
 ## Безопасность (что вырезано перед публикацией)
 

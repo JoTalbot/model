@@ -1,0 +1,12 @@
+---
+COMMAND_ID: cmd-20260907-141100-workflow-dispatch-release-gate
+STATUS: PENDING
+AGENT: remote-operator-workflow-dispatch
+CREATED_AT: 2026-09-07T11:35:00Z
+TIMEOUT_MINUTES: 20
+MODE: workflow_dispatch
+TYPE: WORKFLOW_DISPATCH
+WORKFLOW: release-gate.yml
+REF: main
+INPUTS_JSON: {}
+---

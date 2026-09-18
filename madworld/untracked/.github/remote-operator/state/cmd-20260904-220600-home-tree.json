@@ -1,0 +1,14 @@
+{
+  "command_id": "cmd-20260904-220600-home-tree",
+  "attempt_id": "cmd-20260904-220600-home-tree-attempt-20260904T222624Z-866806",
+  "status": "DONE",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-04T22:26:24Z",
+  "started_at": "2026-09-04T22:26:24Z",
+  "timeout_minutes": 2,
+  "pid": 866856,
+  "finished_at": "2026-09-04T22:26:25Z",
+  "duration_seconds": 1,
+  "exit_code": 0,
+  "result_path": ".github/remote-operator/results/cmd-20260904-220600-home-tree/result.md"
+}

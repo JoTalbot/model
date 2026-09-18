@@ -1,0 +1,31 @@
+RELEASE_GATES_START
+HOST=arm-server-01
+NOW=2026-09-04T23:50:24Z
+BACKUP_VERIFY=
+/opt/madworld/backups/madworld-20260904T103808Z.dump: OK
+LATEST_BACKUP=/opt/madworld/backups/madworld-20260904T103808Z.dump
+BACKUP_TIMER=
+active
+enabled
+Sat 2026-09-05 03:18:51 UTC 3h 28min Fri 2026-09-04 03:16:00 UTC 20h ago madworld-backup.timer madworld-backup.service
+DR_CAPABILITY=
+BACKUP_RESTORE_SCRIPT=missing
+DR_ENV_MADWORLD_DATABASE_URL=absent
+DR_ENV_RESTORE_DATABASE_URL=absent
+CAPACITY_ENVIRONMENT=
+/opt/madworld/ops/B10_CAPACITY_CI_EVIDENCE.md
+/opt/madworld/ops/B10_CAPACITY_VERIFICATION.md
+/opt/madworld/ops/LOAD_TEST_PLAN.md
+ANDROID_DEVICES=
+adb=absent
+emulator=absent
+ANDROID_SDK=
+PUBLIC_TLS=
+subject=CN = autosklo.org.ua
+issuer=C = US, O = Google Trust Services, CN = WE1
+Verify return code: 0 (ok)
+PUBLIC_READY=
+{"status":"ok","service":"madworld-api","database":"ok","migrations_applied":41}
+HTTP_STATUS=200
+FAILED_UNITS=
+RELEASE_GATES_END

@@ -1,0 +1,107 @@
+PRODUCTION_PROXY_CHECK_START
+HOST=arm-server-01
+NOW=2026-09-04T22:56:20Z
+REPO_HEAD=b66e1ec3afa0d3796e9a5fd4eafb5107d5d9fac5
+ORIGIN_MAIN=4339091ba0077b321bdad74e199d20645cbeefc0
+REPO_REMOTE=git@github.com-madworld:JoTalbot/MadWorld.git
+BRANCH=main
+RECENT_COMMITS=
+b66e1ec (HEAD -> main) chore(remote-operator): request live server status check
+db0c9de test(remote-operator): run server health audit
+4d5ab0d docs(remote-operator): document agent SSH usage
+baa336d docs(agents): document SSH access via remote operator
+86b0548 fix(remote-operator): isolate result sync from main
+845d55f chore(remote-operator): record command execution result
+85605a5 chore(remote-operator): record command execution result
+8398df4 fix(remote-operator): make executor queue state-aware
+GIT_STATUS=
+## main...origin/main [behind 13]
+ M .github/remote-operator/COMMANDS.txt
+ M .github/workflows/deploy-on-push.yml
+ M AGENTS.md
+ M docs/REMOTE_OPERATOR.md
+ M docs/REMOTE_OPERATOR_INSTALL.md
+?? .github/remote-operator/results/cmd-20260904-220309-operator-test/
+?? .github/remote-operator/results/cmd-20260904-220600-home-tree/
+?? .github/remote-operator/results/cmd-20260904-220900-operator-delivery-diagnostic/
+?? .github/remote-operator/results/cmd-20260905-005600-server-status/
+?? .github/remote-operator/results/cmd-20260905-135000-server-health/
+?? .github/remote-operator/results/cmd-20260905-135500-disk-space/
+?? .github/remote-operator/results/cmd-20260905-140000-server-status-tree/
+?? .github/remote-operator/results/cmd-20260905-140500-server-runtime-final/
+?? .github/remote-operator/results/cmd-20260905-141500-production-proxy-check/
+?? .github/remote-operator/state/cmd-20260904-220309-operator-test.json
+?? .github/remote-operator/state/cmd-20260904-220600-home-tree.json
+?? .github/remote-operator/state/cmd-20260904-220900-operator-delivery-diagnostic.json
+?? .github/remote-operator/state/cmd-20260905-005600-server-status.json
+?? .github/remote-operator/state/cmd-20260905-135000-server-health.json
+?? .github/remote-operator/state/cmd-20260905-135500-disk-space.json
+?? .github/remote-operator/state/cmd-20260905-140000-server-status-tree.json
+?? .github/remote-operator/state/cmd-20260905-140500-server-runtime-final.json
+?? .github/remote-operator/state/cmd-20260905-141500-production-proxy-check.json
+?? docs/REMOTE_OPERATOR_UNIVERSAL.md
+NGINX_CONFIG_TEST=
+2026/09/04 22:56:20 [warn] 960178#960178: the "user" directive makes sense only if the master process runs with super-user privileges, ignored in /etc/nginx/nginx.conf:1
+2026/09/04 22:56:20 [emerg] 960178#960178: cannot load certificate key "/etc/nginx/ssl/api.autosklo.org.ua.origin.key": BIO_new_file() failed (SSL: error:8000000D:system library::Permission denied:calling fopen(/etc/nginx/ssl/api.autosklo.org.ua.origin.key, r) error:10080002:BIO routines::system lib)
+nginx: configuration file /etc/nginx/nginx.conf test failed
+NGINX_SERVER_NAMES=
+NGINX_LISTEN=
+HTTP_HEADERS=
+HTTP/1.1 301 Moved Permanently
+Server: nginx/1.24.0 (Ubuntu)
+Date: Fri, 04 Sep 2026 22:56:20 GMT
+Content-Type: text/html
+Content-Length: 178
+Connection: keep-alive
+Location: https://127.0.0.1/health
+
+HTTPS_HEADERS=
+HTTP/1.1 200 OK
+Server: nginx/1.24.0 (Ubuntu)
+Date: Fri, 04 Sep 2026 22:56:20 GMT
+Content-Type: application/json
+Content-Length: 40
+Connection: keep-alive
+x-request-id: 8e665338-5ea7-4882-b17a-405f89de844e
+x-content-type-options: nosniff
+x-frame-options: DENY
+referrer-policy: no-referrer
+x-ratelimit-remaining: 119
+
+LOCAL_HTTP_HEALTH=
+HTTP/1.1 301 Moved Permanently
+Server: nginx/1.24.0 (Ubuntu)
+Date: Fri, 04 Sep 2026 22:56:20 GMT
+Content-Type: text/html
+Content-Length: 178
+Connection: keep-alive
+Location: https://127.0.0.1/health
+
+curl: (60) SSL certificate problem: self-signed certificate in certificate chain
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
+LOCAL_HTTP_READY=
+HTTP/1.1 301 Moved Permanently
+Server: nginx/1.24.0 (Ubuntu)
+Date: Fri, 04 Sep 2026 22:56:20 GMT
+Content-Type: text/html
+Content-Length: 178
+Connection: keep-alive
+Location: https://127.0.0.1/health/ready
+
+curl: (60) SSL certificate problem: self-signed certificate in certificate chain
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
+DOCKER_PS=
+NAME                           IMAGE                        COMMAND                  SERVICE             CREATED        STATUS                  PORTS
+madworld-api-1                 madworld-api                 "uvicorn app.main:ap…"   api                 12 hours ago   Up 12 hours (healthy)   127.0.0.1:8090->8000/tcp
+madworld-postgres-1            postgres:16                  "docker-entrypoint.s…"   postgres            12 hours ago   Up 12 hours (healthy)   127.0.0.1:5433->5432/tcp
+madworld-world-tick-worker-1   madworld-world-tick-worker   "python -m scripts.w…"   world-tick-worker   12 hours ago   Up 12 hours             8000/tcp
+API_PORTS=
+PRODUCTION_PROXY_CHECK_END

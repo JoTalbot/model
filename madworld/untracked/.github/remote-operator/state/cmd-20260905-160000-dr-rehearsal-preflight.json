@@ -1,0 +1,10 @@
+{
+  "command_id": "cmd-20260905-160000-dr-rehearsal-preflight",
+  "attempt_id": "cmd-20260905-160000-dr-rehearsal-preflight-attempt-20260905T113706Z-3391685",
+  "status": "RUNNING",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-05T11:37:06Z",
+  "started_at": "2026-09-05T11:37:06Z",
+  "timeout_minutes": 5,
+  "pid": 3391736
+}

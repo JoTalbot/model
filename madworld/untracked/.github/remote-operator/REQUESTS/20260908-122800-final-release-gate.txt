@@ -1,0 +1,12 @@
+---
+COMMAND_ID: cmd-20260908-122800-final-release-gate
+STATUS: PENDING
+AGENT: autonomy-b10-release-batch
+CREATED_AT: 2026-09-08T12:28:00+03:00
+TIMEOUT_MINUTES: 30
+MODE: workflow_dispatch
+TYPE: WORKFLOW_DISPATCH
+WORKFLOW: release-gate.yml
+REF: main
+INPUTS_JSON: {}
+---

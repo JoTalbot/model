@@ -1,0 +1,12 @@
+---
+COMMAND_ID: cmd-20260907-121500-capacity-isolated-v4
+STATUS: PENDING
+AGENT: chatgpt-release-batch
+CREATED_AT: 2026-09-07T12:15:00Z
+TIMEOUT_MINUTES: 20
+MODE: workflow_dispatch
+TYPE: WORKFLOW_DISPATCH
+WORKFLOW: remote-operator-dispatch.yml
+REF: main
+INPUTS_JSON: {"command":"curl -fsSL https://raw.githubusercontent.com/JoTalbot/MadWorld/e58651994a3d47cec159410c394169c7d5a97c4b/ops/isolated_capacity_rehearsal.sh -o /opt/madworld/ops/isolated_capacity_rehearsal.sh && chmod 700 /opt/madworld/ops/isolated_capacity_rehearsal.sh && bash /opt/madworld/ops/isolated_capacity_rehearsal.sh","timeout_minutes":"15","workdir":"/opt/madworld","cleanup":"true"}
+---

@@ -1,0 +1,14 @@
+{
+  "command_id": "cmd-20260904-220309-operator-test",
+  "attempt_id": "cmd-20260904-220309-operator-test-attempt-20260904T220310Z-796620",
+  "status": "DONE",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-04T22:03:10Z",
+  "started_at": "2026-09-04T22:03:10Z",
+  "timeout_minutes": 1,
+  "pid": 796645,
+  "finished_at": "2026-09-04T22:03:10Z",
+  "duration_seconds": 0,
+  "exit_code": 0,
+  "result_path": ".github/remote-operator/results/cmd-20260904-220309-operator-test/result.md"
+}

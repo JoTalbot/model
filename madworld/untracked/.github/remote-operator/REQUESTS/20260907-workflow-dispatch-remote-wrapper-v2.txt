@@ -1,0 +1,12 @@
+---
+COMMAND_ID: cmd-20260907-141600-workflow-dispatch-remote-wrapper-v2
+STATUS: PENDING
+AGENT: remote-operator-workflow-dispatch
+CREATED_AT: 2026-09-07T11:46:00Z
+TIMEOUT_MINUTES: 10
+MODE: workflow_dispatch
+TYPE: WORKFLOW_DISPATCH
+WORKFLOW: remote-operator-dispatch.yml
+REF: main
+INPUTS_JSON: {"command":"printf 'REMOTE_OPERATOR_DISPATCH_WRAPPER_OK\\n'; printf 'USER=%s\\n' \"$(id -un)\"; printf 'UID=%s\\n' \"$(id -u)\"; printf 'HOST=%s\\n' \"$(hostname -s)\"","timeout_minutes":"2","workdir":"","cleanup":"true"}
+---

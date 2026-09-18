@@ -1,0 +1,11 @@
+---
+TYPE: WORKFLOW_DISPATCH
+COMMAND_ID: cmd-20260908-113000-isolated-rollback-rehearsal
+STATUS: PENDING
+AGENT: chatgpt-production-batch
+CREATED_AT: 2026-09-08T11:30:00+03:00
+WORKFLOW: remote-operator.yml
+REF: main
+TIMEOUT_MINUTES: 20
+INPUTS_JSON: {"operation":"command","mode":"sync","timeout_minutes":"20","workdir":"/opt/madworld","command":"set -euo pipefail; cd /opt/madworld; bash ops/isolated_rollback_rehearsal.sh"}
+---

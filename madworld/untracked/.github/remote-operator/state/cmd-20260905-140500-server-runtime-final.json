@@ -1,0 +1,14 @@
+{
+  "command_id": "cmd-20260905-140500-server-runtime-final",
+  "attempt_id": "cmd-20260905-140500-server-runtime-final-attempt-20260904T225358Z-951668",
+  "status": "DONE",
+  "executor": "arm-server-01",
+  "claimed_at": "2026-09-04T22:53:58Z",
+  "started_at": "2026-09-04T22:53:58Z",
+  "timeout_minutes": 5,
+  "pid": 951693,
+  "finished_at": "2026-09-04T22:53:59Z",
+  "duration_seconds": 1,
+  "exit_code": 0,
+  "result_path": ".github/remote-operator/results/cmd-20260905-140500-server-runtime-final/result.md"
+}

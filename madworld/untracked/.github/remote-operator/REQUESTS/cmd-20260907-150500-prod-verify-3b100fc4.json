@@ -1,0 +1,12 @@
+---
+COMMAND_ID: cmd-20260907-150500-prod-verify-3b100fc4
+STATUS: PENDING
+AGENT: chatgpt-release-gate
+CREATED_AT: 2026-09-07T15:05:00Z
+TIMEOUT_MINUTES: 10
+MODE: workflow_dispatch
+TYPE: WORKFLOW_DISPATCH
+WORKFLOW: remote-operator.yml
+REF: main
+INPUTS_JSON: {"operation":"diagnostics","command":"","mode":"sync","timeout_minutes":"5","workdir":"/opt/madworld","cleanup":true}
+---

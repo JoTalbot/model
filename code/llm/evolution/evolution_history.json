@@ -1,0 +1,37 @@
+[
+  {
+    "timestamp": "2026-09-03T00:23:46Z",
+    "module": "evolution/history.py",
+    "duration_ms": 2111.9,
+    "code_sha256": "288533cb54ea4bd2",
+    "status": "evolved_verified"
+  },
+  {
+    "timestamp": "2026-09-03T00:32:21Z",
+    "module": "kernel/context.py",
+    "duration_ms": 2387.7,
+    "code_sha256": "c25c3df3fa44c19b",
+    "status": "evolved_verified"
+  },
+  {
+    "timestamp": "2026-09-03T00:32:24Z",
+    "module": "kernel/memory.py",
+    "duration_ms": 2817.3,
+    "code_sha256": "606e187a58a3849b",
+    "status": "evolved_verified"
+  },
+  {
+    "timestamp": "2026-09-03T00:32:28Z",
+    "module": "kernel/component.py",
+    "duration_ms": 2619.7,
+    "code_sha256": "ea43319417cc23d7",
+    "status": "evolved_verified"
+  },
+  {
+    "timestamp": "2026-09-03T00:32:33Z",
+    "module": "kernel/state.py",
+    "duration_ms": 3431.6,
+    "code_sha256": "e58673e4bb9ffcd4",
+    "status": "evolved_verified"
+  }
+]

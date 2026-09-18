@@ -1,0 +1,12 @@
+---
+COMMAND_ID: cmd-20260908-093000-capacity-release-gate
+STATUS: PENDING
+AGENT: chatgpt
+CREATED_AT: 2026-09-08T09:30:00Z
+TIMEOUT_MINUTES: 15
+MODE: workflow_dispatch
+TYPE: WORKFLOW_DISPATCH
+WORKFLOW: remote-operator-dispatch.yml
+REF: main
+INPUTS_JSON: {"command":"set -euo pipefail; cd /opt/madworld; WORKDIR=$(mktemp -d); trap 'rm -rf \"$WORKDIR\"' EXIT; cat > \"$WORKDIR/run.py\" <<'PY'\nimport json,statistics,time,urllib.request,concurrent.futures,threading\nURL='http://127.0.0.1:8000/health/ready'\nDURATION=300\nCONCURRENCY=20\nlock=threading.Lock(); samples=[]; errors=0; total=0\ndef one(_):\n global errors,total\n t=time.perf_counter()\n try:\n  with urllib.request.urlopen(URL,timeout=5) as r:\n   code=r.status; r.read()\n  ok=200<=code<300\n except Exception:\n  ok=False\n  code=0\n dt=(time.perf_counter()-t)*1000\n with lock:\n  total+=1; errors+=not ok; samples.append((time.time(),dt,code))\n return ok\nstart=time.time()\nwith concurrent.futures.ThreadPoolExecutor(max_workers=CONCURRENCY) as ex:\n while time.time()-start < DURATION:\n  list(ex.map(one,range(CONCURRENCY)))\nend=time.time()\nvals=[x[1] for x in samples]; vals.sort()\ndef pct(p): return vals[min(len(vals)-1,max(0,int(len(vals)*p)-1))] if vals else None\nprint(json.dumps({'duration_s':end-start,'total':total,'errors':errors,'successes':total-errors,'rps':total/(end-start),'p50_ms':pct(.50),'p95_ms':pct(.95),'p99_ms':pct(.99),'status_codes':{str(c):sum(1 for x in samples if x[2]==c) for c in sorted(set(x[2] for x in samples))}},sort_keys=True))\nPY\nBEFORE=$(docker ps --format '{{.Names}}' | sort); echo '=== CAPACITY_START ==='; echo "$BEFORE"; python3 \"$WORKDIR/run.py\" | tee \"$WORKDIR/metrics.json\"; echo '=== QUEUE_DEPTH_POST ==='; docker ps --format '{{.Names}}' | sort; echo '=== HEALTH ==='; curl -fsS https://api.autosklo.org.ua/health; printf '\\n%s\\n' '=== READY ==='; curl -fsS https://api.autosklo.org.ua/health/ready; printf '\\n%s\\n' '=== PRODUCTION_DATABASE_TOUCHED ==='; echo false; echo '=== CAPACITY_END ==='; python3 -c \"import json; m=json.load(open('$WORKDIR/metrics.json')); assert m['duration_s']>=295; assert m['rps']>=120; assert m['errors']/m['total']<=0.01; assert m['p95_ms']<=250; assert m['p99_ms']<=500; print('CAPACITY_PASS=TRUE')\"","workdir":"/opt/madworld","timeout_minutes":15,"cleanup":true}
+---

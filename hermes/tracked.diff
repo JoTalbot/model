@@ -1,0 +1,38 @@
+diff --git a/config/models/hermes-models.yaml b/config/models/hermes-models.yaml
+index 4762aaf..7e97828 100644
+--- a/config/models/hermes-models.yaml
++++ b/config/models/hermes-models.yaml
+@@ -32,6 +32,9 @@ models:
+     tier: local
+     use_for: [heartbeat-pings, cheap-retries, last-resort-fallback]
+ 
++  hermes-arena: # arena.ai direct mode: claude-sonnet-4-5-20250929
++    tier: arena
++    use_for: [deep-research, second-opinion, frontier-chat]
+ fallback_chain: [hermes-auto, hermes-fast, hermes-local]
+ # `hermes fallback` manages provider-level retry; the shim returns HTTP 502 with
+ # upstream_status so that chain actually triggers instead of hanging.
+diff --git a/deploy/shim/aios_openai_shim.py b/deploy/shim/aios_openai_shim.py
+index 89215b4..cf29907 100644
+--- a/deploy/shim/aios_openai_shim.py
++++ b/deploy/shim/aios_openai_shim.py
+@@ -34,6 +34,7 @@ Model routing: OpenAI `model` field is interpreted as a balancer tier hint.
+   hermes-reason      -> tier=reasoning
+   hermes-long        -> tier=long_context
+   hermes-local       -> tier=local
++  hermes-arena       -> tier=arena (arena.ai direct mode через шлюз 127.0.0.1:8791)
+   hermes-auto        -> no tier (balancer decides by weight/health)
+ 
+ CHANGELOG
+@@ -78,9 +79,10 @@ TIER_BY_MODEL = {
+     "hermes-reason": "reasoning",
+     "hermes-long": "long_context",
+     "hermes-local": "local",
++    "hermes-arena": "arena",
+     "hermes-auto": None,
+ }
+-VALID_TIERS = {"fast", "code", "reasoning", "long_context", "local"}
++VALID_TIERS = {"fast", "code", "reasoning", "long_context", "local", "arena"}
+ 
+ # Cap the rendered tool catalogue so a 40-tool agent doesn't blow the prompt.
+ MAX_TOOLS_RENDERED = 40
