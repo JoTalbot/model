@@ -80,7 +80,7 @@ class OpenAICompatibleCloudProvider(MultiKeyRotatingProvider):
         messages = []
         if system:
             messages.append({"role": "system", "content": system})
-        messages.append({"role": "user", "content": prompt[:4000]})
+        messages.append({"role": "user", "content": prompt})
 
         payload = {
             "model": self.model,
@@ -252,7 +252,7 @@ class LizaRPAProvider(BaseLLMProvider):
         messages = []
         if system:
             messages.append({"role": "system", "content": system})
-        messages.append({"role": "user", "content": prompt[:1500]})
+        messages.append({"role": "user", "content": prompt})
         
         t0 = time.time()
         async with httpx.AsyncClient(timeout=self.timeout_sec) as client:
@@ -280,7 +280,7 @@ class OllamaLocalProvider(BaseLLMProvider):
         url = f"{self.endpoint}/api/generate"
         payload = {
             "model": self.model,
-            "prompt": prompt[:1500],
+            "prompt": prompt,
             "system": system or "Отвечай по-русски, строго и лаконично.",
             "stream": False,
             "keep_alive": "24h",
