@@ -6,11 +6,8 @@ import os, sys, time, json, asyncio
 from pathlib import Path
 from typing import Dict, Any, List
 
-sys.path.insert(0, '/opt')
-sys.path.insert(0, '/opt/aios')
-
 try:
-    from aios.llm.llm_balancer import LLMBalancer
+    from swarm.llm.balancer import LLMBalancer
     balancer = LLMBalancer.get_instance()
 except Exception:
     balancer = None
@@ -25,26 +22,33 @@ async def benchmark_all_providers() -> Dict[str, Any]:
     results = []
     
     for provider in balancer.providers:
+        if getattr(provider, "strict_tier", False) or provider.name == "autonomous_heuristic_engine":
+            results.append({"name": provider.name, "tier": provider.tier, "healthy": provider.is_available(), "skipped": True, "latency_ms": None})
+            continue
         if not provider.is_available():
             results.append({"name": provider.name, "tier": provider.tier, "healthy": False, "latency_ms": 9999.0})
             continue
             
         t0 = time.time()
         try:
-            res = await asyncio.wait_for(provider.generate("Ping test. Reply OK.", system="Reply strictly in 1 word."), timeout=6.0)
+            res = await asyncio.wait_for(provider.generate("Ping test. Reply OK.", system="Reply strictly in 1 word."), timeout=provider.timeout_sec + 1.0)
             dt = round((time.time() - t0)*1000, 1)
             results.append({"name": provider.name, "tier": provider.tier, "healthy": True, "latency_ms": dt, "reply": res[:30]})
         except Exception as e:
             results.append({"name": provider.name, "tier": provider.tier, "healthy": False, "error": str(e)[:60], "latency_ms": 9999.0})
             
-    # Sort results by latency
-    sorted_results = sorted(results, key=lambda x: x["latency_ms"])
-    
-    # Auto-tune weights: top 3 fastest get weight 1, 2, 3
-    for idx, r in enumerate(sorted_results):
-        for p in balancer.providers:
-            if p.name == r["name"] and r["healthy"]:
-                p.weight = max(1, idx + 1)
+    # Tune only within each tier. A global latency ranking would make a fast
+    # edge model outrank a slower but semantically appropriate reasoning model.
+    sorted_results = sorted(results, key=lambda x: x["latency_ms"] if isinstance(x.get("latency_ms"), (int, float)) else 999999.0)
+    by_tier = {}
+    for r in sorted_results:
+        if r.get("healthy") and not r.get("skipped"):
+            by_tier.setdefault(r["tier"], []).append(r)
+    for tier_results in by_tier.values():
+        for idx, r in enumerate(tier_results):
+            for p in balancer.providers:
+                if p.name == r["name"]:
+                    p.weight = max(1, idx + 1)
                 
     output = {
         "timestamp": time.strftime('%Y-%m-%dT%H:%M:%SZ'),
